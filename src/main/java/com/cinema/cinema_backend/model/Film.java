@@ -6,6 +6,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "films")
 public class Film {
+    private Long id;
     private  String name;
     private int length;
     private String genre;
@@ -18,7 +19,8 @@ public class Film {
     public Film(){
     }
 
-    public Film(String name, int length, String genre, String intro, String director, String[] actors, double rating, double price){
+    public Film(Long id,String name, int length, String genre, String intro, String director, String[] actors, double rating, double price){
+        this.id = id;
         this.name = name;
         this.length = length;
         this.genre = genre;
@@ -27,6 +29,10 @@ public class Film {
         this.actors = actors;
         this.rating = rating;
         this.price = price;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
@@ -59,6 +65,10 @@ public class Film {
 
     public double getPrice() {
         return price;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setName(String name) {
