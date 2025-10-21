@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 
+@Entity
+@Table(name = "tickets")
 public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +19,6 @@ public class Ticket {
 
     private boolean isAvailable;
 
-    private User user;
 
     @ManyToOne
     @JoinColumn(name = "seat_id")
@@ -30,12 +31,11 @@ public class Ticket {
     public Ticket() {
     }
 
-    public Ticket(Long id, Film film, BigDecimal price, boolean isAvailable, User user, Seat seat, Order order) {
+    public Ticket(Long id, Film film, BigDecimal price, boolean isAvailable, Seat seat, Order order) {
         this.id = id;
         this.film = film;
         this.price = price;
         this.isAvailable = isAvailable;
-        this.user = user;
         this.seat = seat;
         this.order = order;
     }
@@ -64,13 +64,6 @@ public class Ticket {
         this.seat = seat;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     public boolean isAvailable() {
         return isAvailable;

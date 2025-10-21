@@ -19,7 +19,7 @@ public class Film {
     private String intro;
 
     @ManyToOne
-    @JoinColumn(name = "film_id")
+    @JoinColumn(name = "director_id")
 //    add cascade type
     private Director director;
     @ManyToMany
