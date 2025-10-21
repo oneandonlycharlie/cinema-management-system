@@ -1,89 +1,100 @@
 package com.cinema.cinema_backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "orders")
 public class Order {
-    private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private LocalDateTime createdAt;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
-    private String[] tickets;
+
+    @OneToMany(mappedBy = "order")
+    private Set<Ticket> tickets;
+
+    @OneToOne(mappedBy = "order")
+    private Payment payments;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
     private BigDecimal totalAmount;
-    private String[] payments;
-    private String status;
 
     public Order() {
 
     }
 
-    public Order(long id, LocalDateTime createdAt, User user, String[] tickets, BigDecimal totalAmount, String[] payments, String status) {
+    public Order(Long id, LocalDateTime createdAt, Set<Ticket> tickets, User user, OrderStatus status, Payment payments, BigDecimal totalAmount) {
         this.id = id;
         this.createdAt = createdAt;
-        this.user = user;
         this.tickets = tickets;
-        this.totalAmount = totalAmount;
-        this.payments = payments;
+        this.user = user;
         this.status = status;
+        this.payments = payments;
+        this.totalAmount = totalAmount;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public String[] getTickets() {
-        return tickets;
-    }
-
-    public BigDecimal getTotalAmount() {
-        return totalAmount;
-    }
-
-    public String[] getPayments() {
-        return payments;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public User getUser() {
+        return user;
     }
 
     public void setUser(User user) {
         this.user = user;
     }
 
-    public void setTickets(String[] tickets) {
+    public Set<Ticket> getTickets() {
+        return tickets;
+    }
+
+    public void setTickets(Set<Ticket> tickets) {
         this.tickets = tickets;
+    }
+
+    public Payment getPayments() {
+        return payments;
+    }
+
+    public void setPayments(Payment payments) {
+        this.payments = payments;
+    }
+
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
+    }
+
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
     }
 
     public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
-    }
-
-    public void setPayments(String[] payments) {
-        this.payments = payments;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 }

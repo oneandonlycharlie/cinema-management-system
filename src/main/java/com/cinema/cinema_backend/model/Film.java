@@ -1,25 +1,47 @@
 package com.cinema.cinema_backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+
+import jakarta.persistence.*;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Entity
 @Table(name = "films")
 public class Film {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private  String name;
+    private String name;
     private int length;
-    private String genre;
+    @Enumerated(EnumType.STRING)
+    private Genre genre;
     private String intro;
-    private String director;
-    private String[] actors;
-    private double rating;
-    private double price;
 
-    public Film(){
+    @ManyToOne
+    @JoinColumn(name = "film_id")
+//    add cascade type
+    private Director director;
+    @ManyToMany
+    @JoinTable(
+            name = "films_actors",
+            joinColumns = @JoinColumn(name = "film_id"),
+            inverseJoinColumns = @JoinColumn(name = "actor_id")
+    )
+    private Set<Actor> actors = new LinkedHashSet<>();
+    private double rating;
+
+    @OneToMany(mappedBy = "film")
+    private Set<Ticket> tickets = new LinkedHashSet<>();
+    ;
+
+    @OneToMany(mappedBy = "film")
+    private Set<ShowTime> showTimes = new LinkedHashSet<>();
+
+    public Film() {
     }
 
-    public Film(Long id,String name, int length, String genre, String intro, String director, String[] actors, double rating, double price){
+    public Film(Long id, String name, int length, Genre genre, String intro, Director director, Set<Actor> actors, double rating, Set<Ticket> tickets, Set<ShowTime> showTimes) {
         this.id = id;
         this.name = name;
         this.length = length;
@@ -28,7 +50,8 @@ public class Film {
         this.director = director;
         this.actors = actors;
         this.rating = rating;
-        this.price = price;
+        this.tickets = tickets;
+        this.showTimes = showTimes;
     }
 
     public Long getId() {
@@ -43,7 +66,7 @@ public class Film {
         return length;
     }
 
-    public String getGenre() {
+    public Genre getGenre() {
         return genre;
     }
 
@@ -51,20 +74,24 @@ public class Film {
         return intro;
     }
 
-    public String getDirector() {
+    public Director getDirector() {
         return director;
-    }
-
-    public String[] getActors() {
-        return actors;
     }
 
     public double getRating() {
         return rating;
     }
 
-    public double getPrice() {
-        return price;
+    public Set<Ticket> getTickets() {
+        return tickets;
+    }
+
+    public Set<Actor> getActors() {
+        return actors;
+    }
+
+    public Set<ShowTime> getShowTimes() {
+        return showTimes;
     }
 
     public void setId(Long id) {
@@ -79,7 +106,7 @@ public class Film {
         this.length = length;
     }
 
-    public void setGenre(String genre) {
+    public void setGenre(Genre genre) {
         this.genre = genre;
     }
 
@@ -87,19 +114,26 @@ public class Film {
         this.intro = intro;
     }
 
-    public void setDirector(String director) {
-        this.director = director;
-    }
-
-    public void setActors(String[] actors) {
-        this.actors = actors;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
     public void setRating(double rating) {
         this.rating = rating;
     }
+
+    public void setDirector(Director director) {
+        this.director = director;
+    }
+
+    public void setActors(Set<Actor> actors) {
+        this.actors = actors;
+    }
+
+    public void setTickets(Set<Ticket> tickets) {
+        this.tickets = tickets;
+    }
+
+    public void setShowTimes(Set<ShowTime> showTimes) {
+        this.showTimes = showTimes;
+    }
 }
+
+
+

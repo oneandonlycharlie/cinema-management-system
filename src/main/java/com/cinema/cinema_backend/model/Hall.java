@@ -1,30 +1,74 @@
 package com.cinema.cinema_backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-import org.springframework.security.core.userdetails.memory.UserAttribute;
+import jakarta.persistence.*;
 
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 @Table(name= "halls")
-public class Hall {
-    private long id;
+public class Hall{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
     private int capacity;
-    private String[] showtimes;
-    private String[] seats;
+
+    @OneToMany(mappedBy = "hall")
+    private Set<ShowTime> showTimes = new LinkedHashSet<>();;
+
+    @OneToMany(mappedBy = "hall")
+    private Set<Seat> seats = new LinkedHashSet<>();;
 
     public Hall(){
 
     }
 
-    public Hall(long id, String name, int capacity, String[] showtimes, String[] seats){
+    public Hall(Long id, String name, int capacity, Set<ShowTime> showTimes, Set<Seat> seats) {
         this.id = id;
         this.name = name;
         this.capacity = capacity;
-        this.showtimes = showtimes;
+        this.showTimes = showTimes;
         this.seats = seats;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public Set<Seat> getSeats() {
+        return seats;
+    }
+
+    public Set<ShowTime> getShowTimes() {
+        return showTimes;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public void setSeats(Set<Seat> seats) {
+        this.seats = seats;
+    }
+
+    public void setShowTimes(Set<ShowTime> showTimes) {
+        this.showTimes = showTimes;
     }
 }
