@@ -6,10 +6,11 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class CinemaUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String name;
     private String email;
     private String password;
     private String role;
@@ -17,12 +18,13 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Set<Order> orders;
 
-    public User() {
+    public CinemaUser() {
 
     }
 
-    public User(Long id, String email, String password, String role, Set<Order> orders) {
+    public CinemaUser(Long id, String name, String email, String password, String role, Set<Order> orders) {
         this.id = id;
+        this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
@@ -35,6 +37,14 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
