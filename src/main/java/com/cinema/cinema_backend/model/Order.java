@@ -16,7 +16,7 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private CinemaUser cinemaUser;
 
     @OneToMany(mappedBy = "order")
     private Set<Ticket> tickets;
@@ -32,11 +32,11 @@ public class Order {
 
     }
 
-    public Order(Long id, LocalDateTime createdAt, Set<Ticket> tickets, User user, OrderStatus status, Payment payments, BigDecimal totalAmount) {
+    public Order(Long id, LocalDateTime createdAt, Set<Ticket> tickets, CinemaUser cinemaUser, OrderStatus status, Payment payments, BigDecimal totalAmount) {
         this.id = id;
         this.createdAt = createdAt;
         this.tickets = tickets;
-        this.user = user;
+        this.cinemaUser = cinemaUser;
         this.status = status;
         this.payments = payments;
         this.totalAmount = totalAmount;
@@ -58,12 +58,12 @@ public class Order {
         this.createdAt = createdAt;
     }
 
-    public User getUser() {
-        return user;
+    public CinemaUser getUser() {
+        return cinemaUser;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(CinemaUser cinemaUser) {
+        this.cinemaUser = cinemaUser;
     }
 
     public Set<Ticket> getTickets() {
