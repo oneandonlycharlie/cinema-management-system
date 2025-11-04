@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class CinemaUserService {
     private final CinemaUserRepository userRepository;
@@ -30,5 +32,13 @@ public class CinemaUserService {
                 "ROLE_USER"
         );
         userRepository.save(newUser);
+    }
+
+    public Optional<CinemaUser> findUserByEmail(String email){
+        return userRepository.findUserByEmail(email);
+    }
+
+    public Optional<CinemaUser> findUserByName(String name){
+        return userRepository.findUserByName(name);
     }
 }

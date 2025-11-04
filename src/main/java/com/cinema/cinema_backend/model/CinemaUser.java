@@ -2,6 +2,8 @@ package com.cinema.cinema_backend.model;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
@@ -15,8 +17,8 @@ public class CinemaUser {
     private String password;
     private String role;
 
-    @OneToMany(mappedBy = "user")
-    private Set<Order> orders;
+    @OneToMany(mappedBy = "cinemaUser")
+    private Set<Order> orders = new LinkedHashSet<>();
 
     public CinemaUser() {
 
@@ -29,6 +31,10 @@ public class CinemaUser {
         this.password = password;
         this.role = role;
         this.orders = orders;
+    }
+
+    public CinemaUser(Long id, String name, String email, String password, String role) {
+        this(id, name, email, password, role, new LinkedHashSet<>());
     }
 
     public Long getId() {
