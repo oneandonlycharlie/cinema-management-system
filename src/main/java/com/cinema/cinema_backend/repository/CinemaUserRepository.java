@@ -16,5 +16,4 @@ public interface CinemaUserRepository extends JpaRepository<CinemaUser, Long> {
 
     boolean existsByEmail(String email);
 
-
 }

@@ -1,5 +1,6 @@
 package com.cinema.cinema_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -14,7 +15,9 @@ public class CinemaUser {
     private Long id;
     private String name;
     private String email;
+    @JsonIgnore
     private String password;
+    @JsonIgnore
     private String role;
 
     @OneToMany(mappedBy = "cinemaUser")

@@ -6,6 +6,7 @@ import com.cinema.cinema_backend.model.Film;
 import com.cinema.cinema_backend.repository.FilmRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,6 +33,23 @@ public class FilmService {
 
     public Optional<Film> findFilmByName(String name){
         return filmRepository.findFilmByName(name);
+    }
+
+    public List<Film> findAllFilms(){
+        return filmRepository.findAll();
+    }
+
+    public Optional<Film> findFilmById(Long id){
+        return filmRepository.findById(id);
+    }
+
+    public boolean deleteFilmById(Long id){
+        if (filmRepository.existsById(id)) {
+            filmRepository.deleteById(id);
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

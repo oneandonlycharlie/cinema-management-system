@@ -1,6 +1,8 @@
 package com.cinema.cinema_backend.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -18,23 +20,27 @@ public class Film {
     private Genre genre;
     private String intro;
 
-    @ManyToOne
+
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "director_id")
+    @JsonManagedReference
 //    add cascade type
     private Director director;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "films_actors",
             joinColumns = @JoinColumn(name = "film_id"),
             inverseJoinColumns = @JoinColumn(name = "actor_id")
     )
+    @JsonIgnore
     private Set<Actor> actors = new LinkedHashSet<>();
     private double rating;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "film")
     private Set<Ticket> tickets = new LinkedHashSet<>();
     ;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "film")
     private Set<ShowTime> showTimes = new LinkedHashSet<>();
 

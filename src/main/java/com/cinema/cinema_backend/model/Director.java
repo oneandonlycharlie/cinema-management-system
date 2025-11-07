@@ -1,5 +1,6 @@
 package com.cinema.cinema_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ public class Director {
     private String name;
 
     @OneToMany(mappedBy = "director")
+    @JsonBackReference
     private List<Film> films = new ArrayList<>();
 
     public Director(){
