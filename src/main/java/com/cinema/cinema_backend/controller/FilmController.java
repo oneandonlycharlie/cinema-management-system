@@ -1,9 +1,11 @@
 package com.cinema.cinema_backend.controller;
 
 import com.cinema.cinema_backend.dto.FilmCreateRequest;
+import com.cinema.cinema_backend.dto.FilmUpdateRequest;
 import com.cinema.cinema_backend.model.Film;
 import com.cinema.cinema_backend.service.FilmService;
 import jakarta.validation.Valid;
+import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +35,7 @@ public class FilmController {
         return ResponseEntity.ok(films);
     }
 
-    @GetMapping(path = "film/{id}")
+    @GetMapping(path = "films/{id}")
     public ResponseEntity<?> getFilmById(@PathVariable Long id){
         Film film = filmService.findFilmById(id)
                 .orElseThrow(()-> new NoSuchElementException("Film not found with id:" + id));
@@ -41,10 +43,15 @@ public class FilmController {
     }
 
     // update
+    @PatchMapping(path = "films/{id}")
+    public ResponseEntity<?> updateFilm(@PathVariable Long id, @RequestBody FilmUpdateRequest request) {
+        Film updated = filmService.updateFilmById(id, request);
+        return ResponseEntity.ok(updated);
+    }
 
     // delete
-    @DeleteMapping(path = "film/{id}")
-    public ResponseEntity<?> deleteFilmById(@PathVariable Long id) {
+    @DeleteMapping(path = "films/{id}")
+    public ResponseEntity<?> deleteFilm(@PathVariable Long id) {
         boolean deleted = filmService.deleteFilmById(id);
         if (deleted) {
             return ResponseEntity.ok("Film deleted successfully with id: " + id);

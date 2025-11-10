@@ -1,12 +1,15 @@
 package com.cinema.cinema_backend.service;
 
 import com.cinema.cinema_backend.dto.FilmCreateRequest;
+import com.cinema.cinema_backend.dto.FilmUpdateRequest;
 import com.cinema.cinema_backend.model.CinemaUser;
 import com.cinema.cinema_backend.model.Film;
 import com.cinema.cinema_backend.repository.FilmRepository;
+import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -41,6 +44,21 @@ public class FilmService {
 
     public Optional<Film> findFilmById(Long id){
         return filmRepository.findById(id);
+    }
+
+    public Film updateFilmById(Long id, FilmUpdateRequest request){
+        Film foundFilm = filmRepository.findById(id)
+                .orElseThrow(()-> new NoSuchElementException("No film found by id " + id));
+
+        request.getName().ifPresent(foundFilm::setName);
+        request.getLength().ifPresent(foundFilm::setLength);
+        request.getGenre().ifPresent(foundFilm::setGenre);
+        request.getIntro().ifPresent(foundFilm::setIntro);
+        request.getDirector().ifPresent(foundFilm::setDirector);
+        request.getActors().ifPresent(foundFilm::setActors);
+        request.getRating().ifPresent(foundFilm::setRating);
+
+        return filmRepository.save(foundFilm);
     }
 
     public boolean deleteFilmById(Long id){
