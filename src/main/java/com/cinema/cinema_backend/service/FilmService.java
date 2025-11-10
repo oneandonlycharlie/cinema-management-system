@@ -48,15 +48,15 @@ public class FilmService {
 
     public Film updateFilmById(Long id, FilmUpdateRequest request){
         Film foundFilm = filmRepository.findById(id)
-                .orElseThrow(()-> new NoSuchElementException("No film found by id " + id));
+                .orElseThrow(() -> new NoSuchElementException("No film found by id " + id));
 
-        request.getName().ifPresent(foundFilm::setName);
-        request.getLength().ifPresent(foundFilm::setLength);
-        request.getGenre().ifPresent(foundFilm::setGenre);
-        request.getIntro().ifPresent(foundFilm::setIntro);
-        request.getDirector().ifPresent(foundFilm::setDirector);
-        request.getActors().ifPresent(foundFilm::setActors);
-        request.getRating().ifPresent(foundFilm::setRating);
+        if (request.getName() != null) foundFilm.setName(request.getName());
+        if (request.getLength() != null) foundFilm.setLength(request.getLength());
+        if (request.getGenre() != null) foundFilm.setGenre(request.getGenre());
+        if (request.getIntro() != null) foundFilm.setIntro(request.getIntro());
+        if (request.getDirector() != null) foundFilm.setDirector(request.getDirector());
+        if (request.getActors() != null) foundFilm.setActors(request.getActors());
+        if (request.getRating() != null) foundFilm.setRating(request.getRating());
 
         return filmRepository.save(foundFilm);
     }
