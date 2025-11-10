@@ -22,6 +22,9 @@ public class Seat {
     @ManyToMany(mappedBy = "seats")
     private Set<ShowTime> showTimes;
 
+    public Seat(){
+
+    }
     public Seat(Long id, Hall hall, Set<Ticket> tickets, Set<ShowTime> showTimes) {
         this.id = id;
         this.hall = hall;
