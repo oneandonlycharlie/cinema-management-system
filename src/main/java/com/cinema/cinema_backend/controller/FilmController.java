@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @RestController
 public class FilmController {
@@ -37,16 +38,23 @@ public class FilmController {
 
     @GetMapping(path = "films/{id}")
     public ResponseEntity<?> getFilmById(@PathVariable Long id){
-        Film film = filmService.findFilmById(id)
-                .orElseThrow(()-> new NoSuchElementException("Film not found with id:" + id));
-        return ResponseEntity.ok(film);
+        Optional<Film> film = filmService.findFilmById(id);
+        if (film.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Film not found with id: " + id);
+        }
+        return ResponseEntity.ok(film.get());
     }
 
     // update
     @PatchMapping(path = "films/{id}")
     public ResponseEntity<?> updateFilm(@PathVariable Long id, @RequestBody FilmUpdateRequest request) {
-        Film updated = filmService.updateFilmById(id, request);
-        return ResponseEntity.ok(updated);
+        try {
+            Film updated = filmService.updateFilmById(id, request);
+            return ResponseEntity.ok(updated);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     // delete
