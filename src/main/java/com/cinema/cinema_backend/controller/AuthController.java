@@ -3,6 +3,7 @@ package com.cinema.cinema_backend.controller;
 import com.cinema.cinema_backend.dto.AuthResponse;
 import com.cinema.cinema_backend.dto.LoginRequest;
 import com.cinema.cinema_backend.dto.RegistrationRequest;
+import com.cinema.cinema_backend.dto.UserDto;
 import com.cinema.cinema_backend.model.CinemaUser;
 import com.cinema.cinema_backend.repository.CinemaUserRepository;
 import com.cinema.cinema_backend.security.CinemaUserDetails;
@@ -53,20 +54,32 @@ public class AuthController {
 
     @PostMapping(path = "/login")
     public ResponseEntity<?> postLogIn(@RequestBody LoginRequest request){
+        System.out.println(request);
         Authentication auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.usernameOrEmail(), request.password())
+                new UsernamePasswordAuthenticationToken(request.email(), request.password())
         );
 
         CinemaUserDetails userDetails;
         try {
-            userDetails = cinemaUserDetailsService.loadUserByUsername(request.usernameOrEmail());
+            userDetails = cinemaUserDetailsService.loadUserByUsername(request.email());
         } catch (UsernameNotFoundException e) {
             throw new BadCredentialsException("Invalid username/email or password");
         }
 
+        // 从 userDetails 拿到 CinemaUser 实体
+        CinemaUser cinemaUser = userDetails.getCinemaUser();  // 我会在下面教你添加 getCinemaUser()
+
+        // 构建前端需要的 user DTO
+        UserDto userDto = new UserDto(
+                cinemaUser.getId(),
+                cinemaUser.getName(),
+                cinemaUser.getEmail(),
+                cinemaUser.getRole()
+        );
+
 
         String token = jwtService.generateToken(userDetails);
 
-        return ResponseEntity.ok(new AuthResponse(token));
+        return ResponseEntity.ok(new AuthResponse(token, userDto));
     }
 }
