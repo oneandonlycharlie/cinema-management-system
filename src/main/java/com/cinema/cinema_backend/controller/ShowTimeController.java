@@ -1,7 +1,10 @@
 package com.cinema.cinema_backend.controller;
 
+import com.cinema.cinema_backend.dto.ApiResponse;
+import com.cinema.cinema_backend.dto.ShowTimeDto;
+import com.cinema.cinema_backend.dto.ShowTimeCreateRequest;
 import com.cinema.cinema_backend.dto.ShowTimeUpdateRequest;
-import com.cinema.cinema_backend.model.Film;
+import com.cinema.cinema_backend.dto.mapper.ShowTimeMapper;
 import com.cinema.cinema_backend.model.ShowTime;
 import com.cinema.cinema_backend.service.ShowTimeService;
 import org.springframework.http.HttpStatus;
@@ -9,51 +12,78 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/showtimes")
 public class ShowTimeController {
 
-    private ShowTimeService showTimeService;
+    private final ShowTimeService showTimeService;
 
-    public ShowTimeController(ShowTimeService showTimeService){
+    public ShowTimeController(ShowTimeService showTimeService) {
         this.showTimeService = showTimeService;
     }
 
     @PostMapping
-    public ResponseEntity<ShowTime> createShowTime(@RequestBody ShowTime showTime) {
-        ShowTime saved = showTimeService.save(showTime);
-        return ResponseEntity.ok(saved);
+    public ResponseEntity<ApiResponse<ShowTimeDto>> createShowTime(@RequestBody ShowTimeCreateRequest request) {
+        ShowTime saved = showTimeService.createShowTime(request);
+        ShowTimeDto dto = ShowTimeMapper.toDto(saved);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiResponse<>(dto, "ShowTime created", null));
     }
 
     @GetMapping
-    public ResponseEntity<List<ShowTime>> getAllShowTimes() {
-        List<ShowTime> list = showTimeService.findAll();
-        return ResponseEntity.ok(list);
+    public ResponseEntity<ApiResponse<List<ShowTimeDto>>> getAllShowTimes() {
+        List<ShowTimeDto> dtos = showTimeService.findAll()
+                .stream()
+                .map(ShowTimeMapper::toDto)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(new ApiResponse<>(dtos, "All showtimes fetched", null));
     }
+
 
     @GetMapping("/{id}")
-    public ResponseEntity<ShowTime> getShowTimeById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<ShowTimeDto>> getShowTimeById(@PathVariable Long id) {
         return showTimeService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+                .map(showTime -> ResponseEntity.ok(
+                        new ApiResponse<>(ShowTimeMapper.toDto(showTime), "ShowTime fetched", null)
+                ))
+                .orElseGet(() ->
+                        ResponseEntity.status(HttpStatus.NOT_FOUND)
+                                .body(new ApiResponse<>(null, null, "ShowTime not found"))
+                );
     }
+
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ShowTime> updateShowTime(@PathVariable Long id,
-                                                   @RequestBody ShowTimeUpdateRequest request) {
-        ShowTime updated = showTimeService.updateShowTime(id, request);
-        return ResponseEntity.ok(updated);
-    }
+    public ResponseEntity<ApiResponse<ShowTimeDto>> updateShowTime(
+            @PathVariable Long id,
+            @RequestBody ShowTimeUpdateRequest request
+    ) {
+        try {
+            ShowTime updated = showTimeService.updateShowTime(id, request);
+            ShowTimeDto dto = ShowTimeMapper.toDto(updated);
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteShowTime(@PathVariable Long id) {
-        boolean deleted = showTimeService.deleteById(id);
-        if (deleted) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.ok(new ApiResponse<>(dto, "ShowTime updated", null));
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse<>(null, null, e.getMessage()));
         }
     }
 
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteShowTime(@PathVariable Long id) {
+        boolean deleted = showTimeService.deleteById(id);
+
+        if (deleted) {
+            return ResponseEntity.ok(new ApiResponse<>(null, "ShowTime deleted", null));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse<>(null, null, "ShowTime not found"));
+        }
+    }
 }
