@@ -53,5 +53,9 @@ public class CinemaUserDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    public CinemaUser getCinemaUser() {
+        return cinemaUser;
+    }
 }
 
