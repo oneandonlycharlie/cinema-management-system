@@ -1,5 +1,8 @@
 package com.cinema.cinema_backend.controller;
 
+import com.cinema.cinema_backend.dto.ApiResponse;
+import com.cinema.cinema_backend.dto.SeatDto;
+import com.cinema.cinema_backend.dto.mapper.SeatMapper;
 import com.cinema.cinema_backend.model.Seat;
 import com.cinema.cinema_backend.service.SeatService;
 import org.springframework.http.HttpStatus;
@@ -17,36 +20,43 @@ public class SeatController {
         this.seatService = seatService;
     }
 
-    // Create
-    @PostMapping
-    public ResponseEntity<Seat> createSeat(@RequestBody Seat seat) {
-        Seat saved = seatService.save(seat);
-        return ResponseEntity.ok(saved);
-    }
 
     // Read all
     @GetMapping
-    public ResponseEntity<List<Seat>> getAllSeats() {
-        return ResponseEntity.ok(seatService.findAll());
+    public ResponseEntity<ApiResponse<List<SeatDto>>> getAllSeats() {
+
+        List<SeatDto> dtos = seatService.findAll()
+                .stream()
+                .map(SeatMapper::toDto)
+                .toList();
+
+        return ResponseEntity.ok(new ApiResponse<>(dtos, "All seats fetched", null));
     }
 
     // Read by id
     @GetMapping("/{id}")
-    public ResponseEntity<Seat> getSeatById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<SeatDto>> getSeatById(@PathVariable Long id) {
+
         return seatService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+                .map(seat -> ResponseEntity.ok(
+                        new ApiResponse<>(SeatMapper.toDto(seat), "Seat fetched", null)
+                ))
+                .orElseGet(() ->
+                        ResponseEntity.status(404).body(
+                                new ApiResponse<>(null, null, "Seat not found")
+                        )
+                );
     }
 
     // Delete
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSeat(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteSeat(@PathVariable Long id) {
         boolean deleted = seatService.deleteById(id);
+
         if (deleted) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.ok(new ApiResponse<>(null, "Seat deleted", null));
         }
+
+        return ResponseEntity.status(404).body(new ApiResponse<>(null, null, "Seat not found"));
     }
 }
-
