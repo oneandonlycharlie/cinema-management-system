@@ -2,11 +2,9 @@ package com.cinema.cinema_backend.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 @Entity
 @Table(name = "films")
@@ -23,7 +21,7 @@ public class Film {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "director_id")
-    @JsonManagedReference
+    @JsonIgnore
 //    add cascade type
     private Director director;
     @ManyToMany(cascade = CascadeType.ALL)
