@@ -27,11 +27,9 @@ public class CinemaUserDetailsService implements UserDetailsService {
     public CinemaUserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
         Optional<CinemaUser> user = cinemaUserRepository.findUserByEmail(usernameOrEmail);
 
-        // 如果没找到，再按 name 查
         if (user.isEmpty()) {
             user = cinemaUserRepository.findUserByName(usernameOrEmail);
         }
-
         return user.map(CinemaUserDetails::new)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email: " + usernameOrEmail));
     }
