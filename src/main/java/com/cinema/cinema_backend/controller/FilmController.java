@@ -1,11 +1,11 @@
 package com.cinema.cinema_backend.controller;
 
+import com.cinema.cinema_backend.dto.ApiResponse;
 import com.cinema.cinema_backend.dto.FilmCreateRequest;
 import com.cinema.cinema_backend.dto.FilmUpdateRequest;
 import com.cinema.cinema_backend.model.Film;
 import com.cinema.cinema_backend.service.FilmService;
 import jakarta.validation.Valid;
-import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +25,7 @@ public class FilmController {
 
     @PostMapping(path = "/films")
     public ResponseEntity<?> createFilm(@RequestBody @Valid FilmCreateRequest request){
+        System.out.println(request);
         Film film = filmService.save(request);
         return ResponseEntity.ok(film);
     }
@@ -33,7 +34,8 @@ public class FilmController {
     @GetMapping(path = "/films")
     public ResponseEntity<?> getAllFilms(){
         List<Film> films = filmService.findAllFilms();
-        return ResponseEntity.ok(films);
+        ApiResponse<List<Film>> response = new ApiResponse<>(films, "Fetched all films", null);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping(path = "films/{id}")
@@ -43,7 +45,8 @@ public class FilmController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Film not found with id: " + id);
         }
-        return ResponseEntity.ok(film.get());
+        ApiResponse<Film> response = new ApiResponse<>(film.get(), "Fetched film", null);
+        return ResponseEntity.ok(response);
     }
 
     // update
