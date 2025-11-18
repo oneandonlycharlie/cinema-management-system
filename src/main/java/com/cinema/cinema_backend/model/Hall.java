@@ -14,10 +14,10 @@ public class Hall{
     private String name;
     private int capacity;
 
-    @OneToMany(mappedBy = "hall")
+    @OneToMany(mappedBy = "hall", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ShowTime> showTimes = new LinkedHashSet<>();;
 
-    @OneToMany(mappedBy = "hall")
+    @OneToMany(mappedBy = "hall", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Seat> seats = new LinkedHashSet<>();;
 
     public Hall(){
