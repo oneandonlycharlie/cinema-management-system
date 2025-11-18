@@ -1,5 +1,4 @@
 package com.cinema.cinema_backend.security;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -56,8 +55,7 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(matcherRegistry -> matcherRegistry
-                        .requestMatchers(HttpMethod.POST,"/register").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/login").permitAll()
+                        .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(customAuthProvider)
