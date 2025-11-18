@@ -13,9 +13,11 @@ import java.util.Optional;
 public class HallService {
 
     private final HallRepository hallRepository;
+    private final SeatService seatService;
 
-    public HallService(HallRepository hallRepository) {
+    public HallService(HallRepository hallRepository, SeatService seatService) {
         this.hallRepository = hallRepository;
+        this.seatService = seatService;
     }
 
     // Create
@@ -35,13 +37,27 @@ public class HallService {
 
     // Partial update
     public Hall updateHall(Long id, HallUpdateRequest request) {
-        Hall existing = hallRepository.findById(id)
+        Hall hall = hallRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Hall not found with id: " + id));
 
-        request.getName().ifPresent(existing::setName);
-        request.getCapacity().ifPresent(existing::setCapacity);
+        int oldCapacity = hall.getCapacity();
 
-        return hallRepository.save(existing);
+        request.getName().ifPresent(hall::setName);
+        request.getCapacity().ifPresent(newCapacity -> {
+            hall.setCapacity(newCapacity);
+
+            int diff = newCapacity - oldCapacity; // 正数 = 增加, 负数 = 减少
+
+            if (diff > 0) {
+                // 需要新增座位
+                seatService.createSeatsForHall(hall, diff);
+            } else if (diff < 0) {
+                // 需要删除座位
+                seatService.deleteSeatsForHall(hall, -diff);
+            }
+        });
+
+        return hallRepository.save(hall);
     }
 
     // Delete
