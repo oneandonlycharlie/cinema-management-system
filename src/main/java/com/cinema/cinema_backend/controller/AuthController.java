@@ -1,11 +1,7 @@
 package com.cinema.cinema_backend.controller;
 
-import com.cinema.cinema_backend.dto.AuthResponse;
-import com.cinema.cinema_backend.dto.LoginRequest;
-import com.cinema.cinema_backend.dto.RegistrationRequest;
-import com.cinema.cinema_backend.dto.UserDto;
+import com.cinema.cinema_backend.dto.*;
 import com.cinema.cinema_backend.model.CinemaUser;
-import com.cinema.cinema_backend.repository.CinemaUserRepository;
 import com.cinema.cinema_backend.security.CinemaUserDetails;
 import com.cinema.cinema_backend.security.CinemaUserDetailsService;
 import com.cinema.cinema_backend.security.JwtService;
@@ -17,14 +13,13 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Optional;
-
 @RestController
+@RequestMapping("/auth")
 public class AuthController {
 
     private final CinemaUserService cinemaUserService;
@@ -80,6 +75,10 @@ public class AuthController {
 
         String token = jwtService.generateToken(userDetails);
 
-        return ResponseEntity.ok(new AuthResponse(token, userDto));
+        AuthResponse authResponse = new AuthResponse(token, userDto);
+
+        ApiResponse<AuthResponse> response = new ApiResponse<>(authResponse, "Login success", null);
+
+        return ResponseEntity.ok(response);
     }
 }
