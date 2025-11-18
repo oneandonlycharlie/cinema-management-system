@@ -1,6 +1,8 @@
 package com.cinema.cinema_backend.controller;
 
+import com.cinema.cinema_backend.dto.ApiResponse;
 import com.cinema.cinema_backend.dto.RegistrationRequest;
+import com.cinema.cinema_backend.dto.UserDto;
 import com.cinema.cinema_backend.model.CinemaUser;
 import com.cinema.cinema_backend.repository.CinemaUserRepository;
 import com.cinema.cinema_backend.security.CinemaUserDetails;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -40,6 +43,14 @@ public class UserController {
     public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal CinemaUserDetails userDetails){
         CinemaUser user = userService.findUserByEmail(userDetails.getUsername())
                 .orElseThrow(()-> new NoSuchElementException("Can not find current user under email " + userDetails.getUsername()));
-        return ResponseEntity.ok(user);
+        UserDto userDto = new UserDto(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getRole()
+        );
+        ApiResponse<UserDto> response = new ApiResponse<>(userDto, "Fetched current user", null);
+
+        return ResponseEntity.ok(response);
     }
 }
