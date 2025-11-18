@@ -1,5 +1,6 @@
 package com.cinema.cinema_backend.service;
 
+import com.cinema.cinema_backend.dto.ShowTimeCreateRequest;
 import com.cinema.cinema_backend.dto.ShowTimeUpdateRequest;
 import com.cinema.cinema_backend.model.Hall;
 import com.cinema.cinema_backend.model.Seat;
@@ -19,16 +20,30 @@ public class ShowTimeService {
     private ShowTimeRepository showTimeRepository;
     private FilmRepository filmRepository;
     private HallRepository hallRepository;
-    private SeatRepository seatRepository;
 
-    public ShowTimeService(ShowTimeRepository showTimeRepository, FilmRepository filmRepository, HallRepository hallRepository, SeatRepository seatRepository){
+    public ShowTimeService(ShowTimeRepository showTimeRepository, FilmRepository filmRepository, HallRepository hallRepository){
         this.showTimeRepository = showTimeRepository;
         this.filmRepository = filmRepository;
         this.hallRepository = hallRepository;
-        this.seatRepository = seatRepository;
     }
 
-    public ShowTime save(ShowTime showTime){
+    public ShowTime createShowTime(ShowTimeCreateRequest request) {
+        Hall hall = hallRepository.findById(request.getHallId())
+                .orElseThrow(() -> new RuntimeException("Hall not found"));
+
+        Film film = filmRepository.findById(request.getFilmId())
+                .orElseThrow(() -> new RuntimeException("Film not found"));
+
+        ShowTime showTime = new ShowTime();
+        showTime.setHall(hall);
+        showTime.setFilm(film);
+        showTime.setStartTime(request.getStartTime());
+        showTime.setEndTime(request.getEndTime());
+
+        Set<Seat> seats = new HashSet<>(hall.getSeats());
+
+        showTime.setSeats(seats);
+
         return showTimeRepository.save(showTime);
     }
 
@@ -44,21 +59,18 @@ public class ShowTimeService {
         ShowTime foundShowTime = showTimeRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("ShowTime not found with id: " + id));
 
-        // Hall 更新
         request.getHallId().ifPresent(hallId -> {
             Hall hall = hallRepository.findById(hallId)
                     .orElseThrow(() -> new NoSuchElementException("Hall not found with id: " + hallId));
             foundShowTime.setHall(hall);
         });
 
-        // Film 更新
         request.getFilmId().ifPresent(filmId -> {
             Film film = filmRepository.findById(filmId)
                     .orElseThrow(() -> new NoSuchElementException("Film not found with id: " + filmId));
             foundShowTime.setFilm(film);
         });
 
-        // 时间更新
         request.getStartTime().ifPresent(foundShowTime::setStartTime);
         request.getEndTime().ifPresent(foundShowTime::setEndTime);
 
