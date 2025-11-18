@@ -31,8 +31,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String userName;
+        System.out.println("Authorization: " + authHeader);
 
-        if (authHeader == null || !authHeader.startsWith("Bearer")) {
+        String path = request.getRequestURI();
+        System.out.println("path" + path);
+
+        if (path.startsWith("/auth")){
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -46,6 +55,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
         if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             CinemaUserDetails userDetails = this.userDetailsService.loadUserByUsername(userName);
+
             if (jwtService.isTokenValid(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
@@ -55,9 +65,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                         );
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+                System.out.println("Authentication set: " + SecurityContextHolder.getContext().getAuthentication());
             }
         }
         filterChain.doFilter(request, response);
     }
-
 }
