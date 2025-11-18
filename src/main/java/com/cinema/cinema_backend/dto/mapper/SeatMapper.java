@@ -3,6 +3,7 @@ package com.cinema.cinema_backend.dto.mapper;
 
 import com.cinema.cinema_backend.dto.SeatDto;
 import com.cinema.cinema_backend.model.Seat;
+import com.cinema.cinema_backend.model.ShowTime;
 
 import java.util.stream.Collectors;
 
@@ -15,7 +16,7 @@ public class SeatMapper {
 
         dto.setShowTimeIds(
                 entity.getShowTimes().stream()
-                        .map(st -> st.getId())
+                        .map(ShowTime::getId)
                         .collect(Collectors.toList())
         );
 
