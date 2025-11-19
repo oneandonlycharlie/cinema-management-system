@@ -36,16 +36,12 @@ public class Film {
 
     @JsonIgnore
     @OneToMany(mappedBy = "film")
-    private Set<Ticket> tickets = new LinkedHashSet<>();
-    ;
-    @JsonIgnore
-    @OneToMany(mappedBy = "film")
     private Set<ShowTime> showTimes = new LinkedHashSet<>();
 
     public Film() {
     }
 
-    public Film(Long id, String name, int length, Genre genre, String intro, Director director, Set<Actor> actors, double rating, Set<Ticket> tickets, Set<ShowTime> showTimes) {
+    public Film(Long id, String name, int length, Genre genre, String intro, Director director, Set<Actor> actors, double rating, Set<ShowTime> showTimes) {
         this.id = id;
         this.name = name;
         this.length = length;
@@ -54,7 +50,6 @@ public class Film {
         this.director = director;
         this.actors = actors;
         this.rating = rating;
-        this.tickets = tickets;
         this.showTimes = showTimes;
     }
 
@@ -84,10 +79,6 @@ public class Film {
 
     public double getRating() {
         return rating;
-    }
-
-    public Set<Ticket> getTickets() {
-        return tickets;
     }
 
     public Set<Actor> getActors() {
@@ -130,9 +121,6 @@ public class Film {
         this.actors = actors;
     }
 
-    public void setTickets(Set<Ticket> tickets) {
-        this.tickets = tickets;
-    }
 
     public void setShowTimes(Set<ShowTime> showTimes) {
         this.showTimes = showTimes;

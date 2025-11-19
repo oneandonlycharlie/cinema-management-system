@@ -1,7 +1,6 @@
 package com.cinema.cinema_backend.model;
 
 import jakarta.persistence.*;
-
 import java.math.BigDecimal;
 
 @Entity
@@ -12,80 +11,48 @@ public class Ticket {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "film_id")
-    private Film film;
-
-    private BigDecimal price;
-
-    private boolean isAvailable;
-
+    @JoinColumn(name = "showtime_id", nullable = false)
+    private ShowTime showTime; // 绑定场次，而不是电影
 
     @ManyToOne
-    @JoinColumn(name = "seat_id")
-    private Seat seat;
+    @JoinColumn(name = "seat_id", nullable = false)
+    private Seat seat; // 票绑定的座位
 
     @ManyToOne
     @JoinColumn(name = "order_id")
-    private Order order;
+    private Order order; // 订单，可为空
 
-    public Ticket() {
-    }
+    private BigDecimal price;
 
-    public Ticket(Long id, Film film, BigDecimal price, boolean isAvailable, Seat seat, Order order) {
+    private boolean isAvailable = true;
+
+    public Ticket() {}
+
+    public Ticket(Long id, ShowTime showTime, Seat seat, Order order, BigDecimal price, boolean isAvailable) {
         this.id = id;
-        this.film = film;
+        this.showTime = showTime;
+        this.seat = seat;
+        this.order = order;
         this.price = price;
         this.isAvailable = isAvailable;
-        this.seat = seat;
-        this.order = order;
     }
 
-    public Long getId() {
-        return id;
-    }
+    // ----------------- Getter & Setter -----------------
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public ShowTime getShowTime() { return showTime; }
+    public void setShowTime(ShowTime showTime) { this.showTime = showTime; }
 
-    public Order getOrder() {
-        return order;
-    }
+    public Seat getSeat() { return seat; }
+    public void setSeat(Seat seat) { this.seat = seat; }
 
-    public void setOrder(Order order) {
-        this.order = order;
-    }
+    public Order getOrder() { return order; }
+    public void setOrder(Order order) { this.order = order; }
 
-    public Seat getSeat() {
-        return seat;
-    }
+    public BigDecimal getPrice() { return price; }
+    public void setPrice(BigDecimal price) { this.price = price; }
 
-    public void setSeat(Seat seat) {
-        this.seat = seat;
-    }
-
-
-    public boolean isAvailable() {
-        return isAvailable;
-    }
-
-    public void setAvailable(boolean available) {
-        isAvailable = available;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public Film getFilm() {
-        return film;
-    }
-
-    public void setFilm(Film film) {
-        this.film = film;
-    }
+    public boolean isAvailable() { return isAvailable; }
+    public void setAvailable(boolean available) { isAvailable = available; }
 }
