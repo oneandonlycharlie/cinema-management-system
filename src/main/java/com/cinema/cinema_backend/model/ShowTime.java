@@ -1,10 +1,17 @@
 package com.cinema.cinema_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.awt.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "showtimes")
@@ -12,6 +19,7 @@ public class ShowTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private BigDecimal price;
 
     @ManyToOne
     @JoinColumn(name = "hall_id")
@@ -19,6 +27,7 @@ public class ShowTime {
 
     @ManyToOne
     @JoinColumn(name = "film_id")
+    @JsonIgnore
     private Film film;
 
     private LocalDateTime startTime;
@@ -32,13 +41,22 @@ public class ShowTime {
     )
     private Set<Seat> seats = new LinkedHashSet<>();;
 
-    public ShowTime(Long id, Hall hall, Film film, LocalDateTime startTime, LocalDateTime endTime, Set<Seat> seats) {
+    @OneToMany(mappedBy = "showTime", cascade = CascadeType.ALL)
+    private Set<Ticket> tickets = new HashSet<>();
+
+    public ShowTime(Long id, Hall hall, Film film, LocalDateTime startTime, LocalDateTime endTime, Set<Seat> seats, BigDecimal price, Set<Ticket> tickets) {
         this.id = id;
         this.hall = hall;
         this.film = film;
         this.startTime = startTime;
         this.endTime = endTime;
         this.seats = seats;
+        this.price = price;
+        this.tickets = tickets;
+    }
+
+    public ShowTime() {
+
     }
 
     public Long getId() {
@@ -87,5 +105,25 @@ public class ShowTime {
 
     public void setSeats(Set<Seat> seats) {
         this.seats = seats;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public List<Long> getSeatIds(){
+        return seats.stream().map(Seat::getId).toList();
+    }
+
+    public Set<Ticket> getTickets() {
+        return tickets;
+    }
+
+    public void setTickets(Set<Ticket> tickets) {
+        this.tickets = tickets;
     }
 }
