@@ -1,47 +1,33 @@
 package com.cinema.cinema_backend.dto;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 public class TicketUpdateRequest {
+    private Long seatId;          // null 表示不更新
+    private Boolean isAvailable;
+    private BigDecimal price;
 
-    private Optional<Boolean> isAvailable = Optional.empty();
-    private Optional<Long> seatId = Optional.empty();
-    private Optional<Long> filmId = Optional.empty();
-    private Optional<BigDecimal> price = Optional.empty();
-
-    public TicketUpdateRequest() {}
-
-    public Optional<Boolean> getIsAvailable() {
-        return isAvailable;
-    }
-
-    public void setIsAvailable(Optional<Boolean> isAvailable) {
-        this.isAvailable = isAvailable;
-    }
-
-    public Optional<Long> getSeatId() {
+    public Long getSeatId() {
         return seatId;
     }
 
-    public void setSeatId(Optional<Long> seatId) {
+    public void setSeatId(Long seatId) {
         this.seatId = seatId;
     }
 
-    public Optional<Long> getFilmId() {
-        return filmId;
+    public Boolean getIsAvailable() {
+        return isAvailable;
     }
 
-    public void setFilmId(Optional<Long> filmId) {
-        this.filmId = filmId;
+    public void setIsAvailable(Boolean isAvailable) {
+        this.isAvailable = isAvailable;
     }
 
-
-    public Optional<BigDecimal> getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Optional<BigDecimal> price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 }

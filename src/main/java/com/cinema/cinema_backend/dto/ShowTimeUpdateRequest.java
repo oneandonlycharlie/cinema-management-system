@@ -1,48 +1,55 @@
 package com.cinema.cinema_backend.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.Set;
 
 public class ShowTimeUpdateRequest {
 
-    private Optional<Long> hallId = Optional.empty();
-    private Optional<Long> filmId = Optional.empty();
-    private Optional<LocalDateTime> startTime = Optional.empty();
-    private Optional<LocalDateTime> endTime = Optional.empty();
+    private Long hallId;        // Optional 去掉
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private BigDecimal price;
+    private Long FilmId;
 
-    public ShowTimeUpdateRequest() {
-    }
+    public ShowTimeUpdateRequest() {}
 
-    public Optional<Long> getHallId() {
+    public Long getHallId() {
         return hallId;
     }
 
-    public void setHallId(Optional<Long> hallId) {
+    public void setHallId(Long hallId) {
         this.hallId = hallId;
     }
 
-    public Optional<Long> getFilmId() {
-        return filmId;
-    }
-
-    public void setFilmId(Optional<Long> filmId) {
-        this.filmId = filmId;
-    }
-
-    public Optional<LocalDateTime> getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Optional<LocalDateTime> startTime) {
+    public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
 
-    public Optional<LocalDateTime> getEndTime() {
+    public LocalDateTime getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Optional<LocalDateTime> endTime) {
+    public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public Long getFilmId() {
+        return FilmId;
+    }
+
+    public void setFilmId(Long filmId) {
+        FilmId = filmId;
     }
 }

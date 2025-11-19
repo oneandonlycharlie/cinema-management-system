@@ -10,7 +10,7 @@ public class CinemaManagementSystemApplication {
 	public static void main(String[] args) {
 
 		SpringApplication.run(CinemaManagementSystemApplication.class, args);
-		System.out.println("project started!");
+		System.out.println("project started! no compiling error");
 
 	}
 }

@@ -1,15 +1,15 @@
 package com.cinema.cinema_backend.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class ShowTimeCreateRequest {
 
     private Long hallId;
-    private Long filmId;
     private LocalDateTime startTime;
-    private LocalDateTime endTime;
     private List<Long> seatIds;
+    private BigDecimal price;
 
     // Getter / Setter
     public Long getHallId() {
@@ -20,14 +20,6 @@ public class ShowTimeCreateRequest {
         this.hallId = hallId;
     }
 
-    public Long getFilmId() {
-        return filmId;
-    }
-
-    public void setFilmId(Long filmId) {
-        this.filmId = filmId;
-    }
-
     public LocalDateTime getStartTime() {
         return startTime;
     }
@@ -36,20 +28,20 @@ public class ShowTimeCreateRequest {
         this.startTime = startTime;
     }
 
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
-    }
-
     public List<Long> getSeatIds() {
         return seatIds;
     }
 
     public void setSeatIds(List<Long> seatIds) {
         this.seatIds = seatIds;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 }
 

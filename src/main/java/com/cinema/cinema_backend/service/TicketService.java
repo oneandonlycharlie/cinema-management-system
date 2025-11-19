@@ -1,38 +1,31 @@
 package com.cinema.cinema_backend.service;
 
 import com.cinema.cinema_backend.dto.TicketUpdateRequest;
-import com.cinema.cinema_backend.model.Film;
-import com.cinema.cinema_backend.model.Order;
-import com.cinema.cinema_backend.model.Seat;
-import com.cinema.cinema_backend.model.Ticket;
-import com.cinema.cinema_backend.repository.FilmRepository;
-import com.cinema.cinema_backend.repository.OrderRepository;
-import com.cinema.cinema_backend.repository.SeatRepository;
-import com.cinema.cinema_backend.repository.TicketRepository;
+import com.cinema.cinema_backend.model.*;
+import com.cinema.cinema_backend.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class TicketService {
 
     private final TicketRepository ticketRepository;
-    private final FilmRepository filmRepository;
     private final SeatRepository seatRepository;
     private final OrderRepository orderRepository;
+    private final ShowTimeRepository showTimeRepository;
 
     public TicketService(TicketRepository ticketRepository,
-                         FilmRepository filmRepository,
                          SeatRepository seatRepository,
-                         OrderRepository orderRepository) {
+                         OrderRepository orderRepository,
+                         ShowTimeRepository showTimeRepository) {
         this.ticketRepository = ticketRepository;
-        this.filmRepository = filmRepository;
         this.seatRepository = seatRepository;
         this.orderRepository = orderRepository;
+        this.showTimeRepository = showTimeRepository;
     }
 
     private void updateOrderTotalAmount(Order order) {
@@ -47,13 +40,48 @@ public class TicketService {
 
     // Create
     @Transactional
-    public Ticket save(Ticket ticket) {
-        Ticket saved = ticketRepository.save(ticket);
-        if (saved.getOrder() != null) {
-            updateOrderTotalAmount(saved.getOrder());
+    public List<Ticket> createTickets(Long showtimeId, int seatCount) {
+        ShowTime showTime = showTimeRepository.findById(showtimeId)
+                .orElseThrow(() -> new NoSuchElementException("ShowTime not found with id: " + showtimeId));
+
+        // 获取所有 seats
+        List<Seat> seats = new ArrayList<>(showTime.getSeats());
+
+        // 找出已售座位
+        List<Long> soldSeatIds = ticketRepository.findByShowTimeId(showtimeId)
+                .stream()
+                .map(ticket -> ticket.getSeat().getId())   // 每张票只有一个 seat
+                .toList();
+
+        // 过滤可用座位
+        List<Seat> availableSeats = seats.stream()
+                .filter(seat -> !soldSeatIds.contains(seat.getId()))
+                .collect(Collectors.toList());
+
+        if (availableSeats.size() < seatCount) {
+            throw new RuntimeException("Not enough available seats");
         }
-        return saved;
+
+        Collections.shuffle(availableSeats);
+
+        List<Ticket> createdTickets = new ArrayList<>();
+
+        for (int i = 0; i < seatCount; i++) {
+            Seat selectedSeat = availableSeats.get(i);
+
+            Ticket t = new Ticket();
+            t.setShowTime(showTime);
+            t.setSeat(selectedSeat);
+            t.setPrice(showTime.getPrice());
+            t.setAvailable(true);
+
+            createdTickets.add(ticketRepository.save(t));
+        }
+
+        return createdTickets;
     }
+
+
 
     // Read all
     public List<Ticket> findAll() {
@@ -71,21 +99,19 @@ public class TicketService {
         Ticket existing = ticketRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Ticket not found with id: " + id));
 
-        request.getIsAvailable().ifPresent(existing::setAvailable);
-
-        request.getFilmId().ifPresent(filmId -> {
-            Film film = filmRepository.findById(filmId)
-                    .orElseThrow(() -> new NoSuchElementException("Film not found with id: " + filmId));
-            existing.setFilm(film);
-        });
-
-        request.getSeatId().ifPresent(seatId -> {
-            Seat seat = seatRepository.findById(seatId)
-                    .orElseThrow(() -> new NoSuchElementException("Seat not found with id: " + seatId));
+        if (request.getSeatId() != null) {
+            Seat seat = seatRepository.findById(request.getSeatId())
+                    .orElseThrow(() -> new NoSuchElementException("Seat not found with id: " + request.getSeatId()));
             existing.setSeat(seat);
-        });
+        }
 
-        request.getPrice().ifPresent(existing::setPrice);
+        if (request.getIsAvailable() != null) {
+            existing.setAvailable(request.getIsAvailable());
+        }
+
+        if (request.getPrice() != null) {
+            existing.setPrice(request.getPrice());
+        }
 
         Ticket saved = ticketRepository.save(existing);
 
@@ -95,6 +121,8 @@ public class TicketService {
 
         return saved;
     }
+
+
 
     // Delete
     @Transactional

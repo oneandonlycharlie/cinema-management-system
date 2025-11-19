@@ -12,14 +12,15 @@ import com.cinema.cinema_backend.repository.ShowTimeRepository;
 import com.cinema.cinema_backend.repository.FilmRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
 public class ShowTimeService {
 
-    private ShowTimeRepository showTimeRepository;
-    private FilmRepository filmRepository;
-    private HallRepository hallRepository;
+    private final ShowTimeRepository showTimeRepository;
+    private final FilmRepository filmRepository;
+    private final HallRepository hallRepository;
 
     public ShowTimeService(ShowTimeRepository showTimeRepository, FilmRepository filmRepository, HallRepository hallRepository){
         this.showTimeRepository = showTimeRepository;
@@ -27,18 +28,21 @@ public class ShowTimeService {
         this.hallRepository = hallRepository;
     }
 
-    public ShowTime createShowTime(ShowTimeCreateRequest request) {
+    public ShowTime createShowTime(Long filmId, ShowTimeCreateRequest request) {
         Hall hall = hallRepository.findById(request.getHallId())
                 .orElseThrow(() -> new RuntimeException("Hall not found"));
-
-        Film film = filmRepository.findById(request.getFilmId())
+        System.out.println("Film id " + filmId);
+        Film film = filmRepository.findById(filmId)
                 .orElseThrow(() -> new RuntimeException("Film not found"));
 
         ShowTime showTime = new ShowTime();
         showTime.setHall(hall);
         showTime.setFilm(film);
         showTime.setStartTime(request.getStartTime());
-        showTime.setEndTime(request.getEndTime());
+        showTime.setPrice(request.getPrice());
+
+        LocalDateTime endTime = request.getStartTime().plusMinutes(film.getLength());
+        showTime.setEndTime(endTime);
 
         Set<Seat> seats = new HashSet<>(hall.getSeats());
 
@@ -51,6 +55,10 @@ public class ShowTimeService {
         return showTimeRepository.findAll();
     }
 
+    public List<ShowTime> findByFilmId(Long filmId) {
+        return showTimeRepository.findAllByFilmId(filmId);
+    }
+
     public Optional<ShowTime> findById(Long id){
         return showTimeRepository.findById(id);
     }
@@ -59,24 +67,28 @@ public class ShowTimeService {
         ShowTime foundShowTime = showTimeRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("ShowTime not found with id: " + id));
 
-        request.getHallId().ifPresent(hallId -> {
-            Hall hall = hallRepository.findById(hallId)
-                    .orElseThrow(() -> new NoSuchElementException("Hall not found with id: " + hallId));
+        // hallId 不为空时更新
+        if (request.getHallId() != null) {
+            Hall hall = hallRepository.findById(request.getHallId())
+                    .orElseThrow(() -> new NoSuchElementException("Hall not found with id: " + request.getHallId()));
             foundShowTime.setHall(hall);
-        });
+        }
 
-        request.getFilmId().ifPresent(filmId -> {
-            Film film = filmRepository.findById(filmId)
-                    .orElseThrow(() -> new NoSuchElementException("Film not found with id: " + filmId));
+        // filmId 不为空时更新
+        if (request.getFilmId() != null) {
+            Film film = filmRepository.findById(request.getFilmId())
+                    .orElseThrow(() -> new NoSuchElementException("Film not found with id: " + request.getFilmId()));
             foundShowTime.setFilm(film);
-        });
+        }
 
-        request.getStartTime().ifPresent(foundShowTime::setStartTime);
-        request.getEndTime().ifPresent(foundShowTime::setEndTime);
-
+        // startTime / endTime / price 更新
+        if (request.getStartTime() != null) foundShowTime.setStartTime(request.getStartTime());
+        if (request.getEndTime() != null) foundShowTime.setEndTime(request.getEndTime());
+        if (request.getPrice() != null) foundShowTime.setPrice(request.getPrice());
 
         return showTimeRepository.save(foundShowTime);
     }
+
 
     public boolean deleteById(Long id) {
         if (showTimeRepository.existsById(id)) {
@@ -85,5 +97,7 @@ public class ShowTimeService {
         }
         return false;
     }
+
+
 
 }

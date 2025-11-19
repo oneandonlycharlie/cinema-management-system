@@ -7,6 +7,7 @@ import com.cinema.cinema_backend.dto.ShowTimeUpdateRequest;
 import com.cinema.cinema_backend.dto.mapper.ShowTimeMapper;
 import com.cinema.cinema_backend.model.ShowTime;
 import com.cinema.cinema_backend.service.ShowTimeService;
+import org.apache.el.lang.ELArithmetic;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/showtimes")
+@RequestMapping("/films/{filmId}/showtimes")
 public class ShowTimeController {
 
     private final ShowTimeService showTimeService;
@@ -25,8 +26,8 @@ public class ShowTimeController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<ShowTimeDto>> createShowTime(@RequestBody ShowTimeCreateRequest request) {
-        ShowTime saved = showTimeService.createShowTime(request);
+    public ResponseEntity<ApiResponse<ShowTimeDto>> createShowTime(@PathVariable Long filmId, @RequestBody ShowTimeCreateRequest request) {
+        ShowTime saved = showTimeService.createShowTime(filmId, request);
         ShowTimeDto dto = ShowTimeMapper.toDto(saved);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -34,8 +35,8 @@ public class ShowTimeController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<ShowTimeDto>>> getAllShowTimes() {
-        List<ShowTimeDto> dtos = showTimeService.findAll()
+    public ResponseEntity<ApiResponse<List<ShowTimeDto>>> getAllShowTimes(@PathVariable Long filmId) {
+        List<ShowTimeDto> dtos = showTimeService.findByFilmId(filmId)
                 .stream()
                 .map(ShowTimeMapper::toDto)
                 .collect(Collectors.toList());

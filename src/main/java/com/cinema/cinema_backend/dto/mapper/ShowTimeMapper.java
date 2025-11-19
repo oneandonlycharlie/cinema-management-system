@@ -15,6 +15,8 @@ public class ShowTimeMapper {
         dto.setFilmId(showTime.getFilm().getId());
         dto.setStartTime(showTime.getStartTime());
         dto.setEndTime(showTime.getEndTime());
+        dto.setPrice(showTime.getPrice());
+        dto.setHallName(showTime.getHall().getName());
 
         dto.setSeatIds(
                 showTime.getSeats()
