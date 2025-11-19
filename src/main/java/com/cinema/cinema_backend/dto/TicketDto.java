@@ -1,14 +1,25 @@
 package com.cinema.cinema_backend.dto;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class TicketDto {
     private Long id;
-    private Long filmId;
+    private Long showtimeId;
     private Long seatId;
-    private Long orderId;
-    private boolean isAvailable;
     private BigDecimal price;
+    private boolean isAvailable;
+
+    public TicketDto() {
+    }
+
+    public TicketDto(Long id, Long showtimeId, Long seatId, BigDecimal price, boolean isAvailable) {
+        this.id = id;
+        this.showtimeId = showtimeId;
+        this.seatId = seatId;
+        this.price = price;
+        this.isAvailable = isAvailable;
+    }
 
     public Long getId() {
         return id;
@@ -18,12 +29,12 @@ public class TicketDto {
         this.id = id;
     }
 
-    public Long getFilmId() {
-        return filmId;
+    public Long getShowtimeId() {
+        return showtimeId;
     }
 
-    public void setFilmId(Long filmId) {
-        this.filmId = filmId;
+    public void setShowtimeId(Long showtimeId) {
+        this.showtimeId = showtimeId;
     }
 
     public Long getSeatId() {
@@ -34,12 +45,12 @@ public class TicketDto {
         this.seatId = seatId;
     }
 
-    public Long getOrderId() {
-        return orderId;
+    public BigDecimal getPrice() {
+        return price;
     }
 
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public boolean isAvailable() {
@@ -48,13 +59,5 @@ public class TicketDto {
 
     public void setAvailable(boolean available) {
         isAvailable = available;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
     }
 }
