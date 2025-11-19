@@ -1,7 +1,9 @@
 package com.cinema.cinema_backend.service;
 
 import com.cinema.cinema_backend.dto.FilmCreateRequest;
+import com.cinema.cinema_backend.dto.FilmDto;
 import com.cinema.cinema_backend.dto.FilmUpdateRequest;
+import com.cinema.cinema_backend.dto.mapper.FilmWrapper;
 import com.cinema.cinema_backend.model.CinemaUser;
 import com.cinema.cinema_backend.model.Film;
 import com.cinema.cinema_backend.repository.FilmRepository;
@@ -21,7 +23,7 @@ public class FilmService {
         this.filmRepository = filmRepository;
     }
 
-    public Film save(FilmCreateRequest request){
+    public FilmDto save(FilmCreateRequest request){
         Film film = new Film();
         film.setName(request.getName());
         film.setLength(request.getLength());
@@ -30,23 +32,29 @@ public class FilmService {
         film.setRating(request.getRating());
         film.setDirector(request.getDirector());
         film.setActors(request.getActors());
+        Film saved = filmRepository.save(film);
 
-        return filmRepository.save(film);
+        return FilmWrapper.toDto(saved);
     }
 
     public Optional<Film> findFilmByName(String name){
         return filmRepository.findFilmByName(name);
     }
 
-    public List<Film> findAllFilms(){
-        return filmRepository.findAll();
+    public List<FilmDto> findAllFilms(){
+        return filmRepository.findAll()
+                .stream()
+                .map(FilmWrapper::toDto)
+                .toList();
     }
 
-    public Optional<Film> findFilmById(Long id){
-        return filmRepository.findById(id);
+    public FilmDto findFilmById(Long id){
+        return filmRepository.findById(id)
+                .map(FilmWrapper::toDto)
+                .orElse(null);
     }
 
-    public Film updateFilmById(Long id, FilmUpdateRequest request){
+    public FilmDto updateFilmById(Long id, FilmUpdateRequest request){
         Film foundFilm = filmRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No film found by id " + id));
 
@@ -57,8 +65,8 @@ public class FilmService {
         if (request.getDirector() != null) foundFilm.setDirector(request.getDirector());
         if (request.getActors() != null) foundFilm.setActors(request.getActors());
         if (request.getRating() != null) foundFilm.setRating(request.getRating());
-
-        return filmRepository.save(foundFilm);
+        Film updated = filmRepository.save(foundFilm);
+        return FilmWrapper.toDto(updated);
     }
 
     public boolean deleteFilmById(Long id){
