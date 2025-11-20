@@ -4,34 +4,55 @@ import com.cinema.cinema_backend.dto.FilmCreateRequest;
 import com.cinema.cinema_backend.dto.FilmDto;
 import com.cinema.cinema_backend.dto.FilmUpdateRequest;
 import com.cinema.cinema_backend.dto.mapper.FilmWrapper;
-import com.cinema.cinema_backend.model.CinemaUser;
-import com.cinema.cinema_backend.model.Film;
+import com.cinema.cinema_backend.model.*;
+import com.cinema.cinema_backend.repository.ActorRepository;
+import com.cinema.cinema_backend.repository.DirectorRepository;
 import com.cinema.cinema_backend.repository.FilmRepository;
-import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class FilmService {
 
     private final FilmRepository filmRepository;
+    private final DirectorRepository directorRepository;
+    private final ActorRepository actorRepository;
 
-    public FilmService(FilmRepository filmRepository){
+    public FilmService(FilmRepository filmRepository, DirectorRepository directorRepository, ActorRepository actorRepository){
         this.filmRepository = filmRepository;
+        this.directorRepository = directorRepository;
+        this.actorRepository = actorRepository;
     }
 
     public FilmDto save(FilmCreateRequest request){
+        Director director = directorRepository.findByName(request.getDirector())
+                .orElseGet(() -> {
+                    Director newDirector = new Director();
+                    newDirector.setName(request.getDirector());
+                    return directorRepository.save(newDirector);
+                });
+
+        // 2. 处理演员
+        Set<Actor> actors = request.getActors().stream()
+                .map(name -> actorRepository.findByName(name)
+                        .orElseGet(() -> actorRepository.save(new Actor(name))))
+                .collect(Collectors.toSet());
+
+        // 3. 创建电影
         Film film = new Film();
         film.setName(request.getName());
-        film.setLength(request.getLength());
-        film.setGenre(request.getGenre());
         film.setIntro(request.getIntro());
+        film.setLength(request.getLength());
         film.setRating(request.getRating());
-        film.setDirector(request.getDirector());
-        film.setActors(request.getActors());
+        film.setGenre(Genre.valueOf(request.getGenre()));
+        film.setDirector(director); // 设置导演
+        film.setActors(actors);     // 设置演员
+
         Film saved = filmRepository.save(film);
 
         return FilmWrapper.toDto(saved);

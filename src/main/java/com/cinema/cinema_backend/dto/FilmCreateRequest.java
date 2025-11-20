@@ -1,88 +1,38 @@
 package com.cinema.cinema_backend.dto;
 
-import com.cinema.cinema_backend.model.*;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
 
+@NotNull
 public class FilmCreateRequest {
-
-    @NotNull
     private String name;
     private int length;
-
-    private Genre genre;
-    @NotNull
+    private String genre; // 可以改成枚举后在 Service 转
     private String intro;
-
-    private Director director;
-    private Set<Actor> actors = new LinkedHashSet<>();
+    private String director; // 前端传字符串
+    private Set<String> actors; // 前端传名字数组
     private double rating;
 
-    public FilmCreateRequest(String name, int length, Genre genre, String intro, Director director, Set<Actor> actors, double rating) {
-        this.name = name;
-        this.length = length;
-        this.genre = genre;
-        this.intro = intro;
-        this.director = director;
-        this.actors = actors;
-        this.rating = rating;
-    }
+    // getter & setter
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public String getName() {
-        return name;
-    }
+    public int getLength() { return length; }
+    public void setLength(int length) { this.length = length; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getGenre() { return genre; }
+    public void setGenre(String genre) { this.genre = genre.toUpperCase(); }
 
-    public int getLength() {
-        return length;
-    }
+    public String getIntro() { return intro; }
+    public void setIntro(String intro) { this.intro = intro; }
 
-    public void setLength(int length) {
-        this.length = length;
-    }
+    public String getDirector() { return director; }
+    public void setDirector(String director) { this.director = director; }
 
-    public Genre getGenre() {
-        return genre;
-    }
+    public Set<String> getActors() { return actors; }
+    public void setActors(Set<String> actors) { this.actors = actors; }
 
-    public void setGenre(Genre genre) {
-        this.genre = genre;
-    }
-
-    public String getIntro() {
-        return intro;
-    }
-
-    public void setIntro(String intro) {
-        this.intro = intro;
-    }
-
-    public Director getDirector() {
-        return director;
-    }
-
-    public void setDirector(Director director) {
-        this.director = director;
-    }
-
-    public Set<Actor> getActors() {
-        return actors;
-    }
-
-    public void setActors(Set<Actor> actors) {
-        this.actors = actors;
-    }
-
-    public double getRating() {
-        return rating;
-    }
-
-    public void setRating(double rating) {
-        this.rating = rating;
-    }
+    public double getRating() { return rating; }
+    public void setRating(double rating) { this.rating = rating; }
 }
