@@ -24,6 +24,10 @@ public class Actor {
         this.name = name;
     }
 
+    public Actor(String name) {
+        this.name = name;
+    }
+
     public Long getId() {
         return id;
     }

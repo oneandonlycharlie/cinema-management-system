@@ -24,11 +24,15 @@ public class Director {
 
     }
 
-    public Director(Long id,String name, List<Film> films){
-        this.id = id;
+    public Director(String name, List<Film> films){
         this.name = name;
         this.films = films;
     }
+
+    public Director(String name) {
+        this.name = name;
+    }
+
 
     public long getId() {
         return id;
