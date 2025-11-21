@@ -40,7 +40,9 @@ public class TicketService {
 
     // Create
     @Transactional
-    public List<Ticket> createTickets(Long showtimeId, int seatCount) {
+    public List<Ticket> createTickets(Order order) {
+        Long showtimeId = order.getShowTime().getId();
+        int seatCount = order.getSeatCount();
         ShowTime showTime = showTimeRepository.findById(showtimeId)
                 .orElseThrow(() -> new NoSuchElementException("ShowTime not found with id: " + showtimeId));
 
@@ -74,6 +76,7 @@ public class TicketService {
             t.setSeat(selectedSeat);
             t.setPrice(showTime.getPrice());
             t.setAvailable(true);
+            t.setOrder(order);
 
             createdTickets.add(ticketRepository.save(t));
         }
