@@ -28,18 +28,26 @@ public class Order {
     private OrderStatus status;
     private BigDecimal totalAmount;
 
+    @ManyToOne
+    @JoinColumn(name = "showtime_id")
+    private ShowTime showTime;
+
+    private int seatCount;
+
     public Order() {
 
     }
 
-    public Order(Long id, LocalDateTime createdAt, Set<Ticket> tickets, CinemaUser cinemaUser, OrderStatus status, Payment payments, BigDecimal totalAmount) {
+    public Order(Long id, LocalDateTime createdAt, CinemaUser cinemaUser, Set<Ticket> tickets, Payment payments, OrderStatus status, BigDecimal totalAmount, ShowTime showTime, int seatCount) {
         this.id = id;
         this.createdAt = createdAt;
-        this.tickets = tickets;
         this.cinemaUser = cinemaUser;
-        this.status = status;
+        this.tickets = tickets;
         this.payments = payments;
+        this.status = status;
         this.totalAmount = totalAmount;
+        this.showTime = showTime;
+        this.seatCount = seatCount;
     }
 
     public Long getId() {
@@ -96,5 +104,21 @@ public class Order {
 
     public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
+    }
+
+    public ShowTime getShowTime() {
+        return showTime;
+    }
+
+    public void setShowTime(ShowTime showTime) {
+        this.showTime = showTime;
+    }
+
+    public int getSeatCount() {
+        return seatCount;
+    }
+
+    public void setSeatCount(int seatCount) {
+        this.seatCount = seatCount;
     }
 }
