@@ -1,6 +1,7 @@
 package com.cinema.cinema_backend.controller;
 
 import com.cinema.cinema_backend.dto.ApiResponse;
+import com.cinema.cinema_backend.dto.OrderWithTicketsDto;
 import com.cinema.cinema_backend.dto.RegistrationRequest;
 import com.cinema.cinema_backend.dto.UserDto;
 import com.cinema.cinema_backend.model.CinemaUser;
@@ -52,5 +53,18 @@ public class UserController {
         ApiResponse<UserDto> response = new ApiResponse<>(userDto, "Fetched current user", null);
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/users/me/orders")
+    public ResponseEntity
+            <ApiResponse<List<OrderWithTicketsDto>>> getMyOrders(@AuthenticationPrincipal CinemaUserDetails userDetails) {
+        try {
+            Long userId = userDetails.getCinemaUser().getId();
+            List<OrderWithTicketsDto> orders = userService.getMyOrders(userId);
+            ApiResponse<List<OrderWithTicketsDto>> response = new ApiResponse<List<OrderWithTicketsDto>>(orders, null, null);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.ok(new ApiResponse<>(null, e.getMessage(), null));
+        }
     }
 }
