@@ -17,7 +17,8 @@ public class Film {
     @Enumerated(EnumType.STRING)
     private Genre genre;
     private String intro;
-
+    @Column(name = "cover_image_url")
+    private String coverImageUrl;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "director_id")
@@ -41,7 +42,7 @@ public class Film {
     public Film() {
     }
 
-    public Film(Long id, String name, int length, Genre genre, String intro, Director director, Set<Actor> actors, double rating, Set<ShowTime> showTimes) {
+    public Film(Long id, String name, int length, Genre genre, String intro, Director director, Set<Actor> actors, double rating, Set<ShowTime> showTimes, String coverImageUrl) {
         this.id = id;
         this.name = name;
         this.length = length;
@@ -51,6 +52,7 @@ public class Film {
         this.actors = actors;
         this.rating = rating;
         this.showTimes = showTimes;
+        this.coverImageUrl = coverImageUrl;
     }
 
     public Long getId() {
@@ -124,6 +126,14 @@ public class Film {
 
     public void setShowTimes(Set<ShowTime> showTimes) {
         this.showTimes = showTimes;
+    }
+
+    public String getCoverImageUrl() {
+        return coverImageUrl;
+    }
+
+    public void setCoverImageUrl(String coverImageUrl) {
+        this.coverImageUrl = coverImageUrl;
     }
 }
 
