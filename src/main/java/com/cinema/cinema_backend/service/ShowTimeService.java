@@ -35,17 +35,28 @@ public class ShowTimeService {
         Film film = filmRepository.findById(filmId)
                 .orElseThrow(() -> new RuntimeException("Film not found"));
 
+        LocalDateTime startTime = request.getStartTime();
+
+        LocalDateTime endTime = startTime.plusMinutes(film.getLength());
+
+        boolean hasConflict = showTimeRepository
+                .existsByHallIdAndStartTimeLessThanAndEndTimeGreaterThan(
+                        hall.getId(),
+                        endTime,
+                        startTime
+                );
+
+        if (hasConflict) {
+            throw new RuntimeException("ShowTime time conflict in this hall");
+        }
+
         ShowTime showTime = new ShowTime();
         showTime.setHall(hall);
         showTime.setFilm(film);
         showTime.setStartTime(request.getStartTime());
         showTime.setPrice(request.getPrice());
-
-        LocalDateTime endTime = request.getStartTime().plusMinutes(film.getLength());
         showTime.setEndTime(endTime);
-
         Set<Seat> seats = new HashSet<>(hall.getSeats());
-
         showTime.setSeats(seats);
 
         return showTimeRepository.save(showTime);
@@ -79,6 +90,17 @@ public class ShowTimeService {
             Film film = filmRepository.findById(request.getFilmId())
                     .orElseThrow(() -> new NoSuchElementException("Film not found with id: " + request.getFilmId()));
             foundShowTime.setFilm(film);
+        }
+
+        boolean hasConflict = showTimeRepository
+                .existsByHallIdAndStartTimeLessThanAndEndTimeGreaterThan(
+                        foundShowTime.getHall().getId(),
+                        foundShowTime.getEndTime(),
+                        foundShowTime.getStartTime()
+                );
+
+        if (hasConflict) {
+            throw new RuntimeException("ShowTime time conflict in this hall");
         }
 
         // startTime / endTime / price 更新
