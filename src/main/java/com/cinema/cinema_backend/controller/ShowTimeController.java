@@ -7,12 +7,14 @@ import com.cinema.cinema_backend.dto.ShowTimeUpdateRequest;
 import com.cinema.cinema_backend.dto.mapper.ShowTimeMapper;
 import com.cinema.cinema_backend.model.ShowTime;
 import com.cinema.cinema_backend.service.ShowTimeService;
+import jakarta.persistence.EntityNotFoundException;
 import org.apache.el.lang.ELArithmetic;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @RestController
@@ -27,11 +29,21 @@ public class ShowTimeController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<ShowTimeDto>> createShowTime(@PathVariable Long filmId, @RequestBody ShowTimeCreateRequest request) {
-        ShowTime saved = showTimeService.createShowTime(filmId, request);
-        ShowTimeDto dto = ShowTimeMapper.toDto(saved);
+        try {
+            ShowTime saved = showTimeService.createShowTime(filmId, request);
+            ShowTimeDto dto = ShowTimeMapper.toDto(saved);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ApiResponse<>(dto, "ShowTime created", null));
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(new ApiResponse<>(dto, "ShowTime created", null));
+        } catch (RuntimeException e) {
+            if (e.getMessage().contains("conflict")) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body(new ApiResponse<>(null, "ShowTime conflict in this hall", e.getMessage()));
+            }
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse<>(null, "ShowTime creation failed", e.getMessage()));
+        }
     }
 
     @GetMapping
@@ -58,7 +70,7 @@ public class ShowTimeController {
     }
 
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<ShowTimeDto>> updateShowTime(
             @PathVariable Long id,
             @RequestBody ShowTimeUpdateRequest request
@@ -69,8 +81,12 @@ public class ShowTimeController {
 
             return ResponseEntity.ok(new ApiResponse<>(dto, "ShowTime updated", null));
 
-        } catch (RuntimeException e) {
+        } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse<>(null, null, e.getMessage()));
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(new ApiResponse<>(null, null, e.getMessage()));
         }
     }
