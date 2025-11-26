@@ -14,10 +14,11 @@ public class FilmDto {
     private List<ShowTimeDto> showTimes;
     private String director;
     private List<String> actors;
+    private String coverImageUrl;
 
     public FilmDto() {}
 
-    public FilmDto(Long id, String name, int length, Genre genre, String intro, double rating, List<ShowTimeDto> showTimes, String director, List<String> actors) {
+    public FilmDto(Long id, String name, int length, Genre genre, String intro, double rating, List<ShowTimeDto> showTimes, String director, List<String> actors, String coverImageUrl) {
         this.id = id;
         this.name = name;
         this.length = length;
@@ -27,6 +28,7 @@ public class FilmDto {
         this.showTimes = showTimes;
         this.director = director;
         this.actors = actors;
+        this.coverImageUrl = coverImageUrl;
     }
 
     // getters & setters
@@ -65,5 +67,13 @@ public class FilmDto {
 
     public List<String> getActors() {
         return actors;
+    }
+
+    public String getCoverImageUrl() {
+        return coverImageUrl;
+    }
+
+    public void setCoverImageUrl(String coverImageUrl) {
+        this.coverImageUrl = coverImageUrl;
     }
 }
