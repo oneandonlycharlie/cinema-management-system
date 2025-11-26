@@ -57,7 +57,21 @@ public class SecurityConfig {
                 .authorizeHttpRequests(matcherRegistry -> matcherRegistry
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/images/**").permitAll()
-                        .requestMatchers("/films/*/showtimes").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/films/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/films/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/films/**").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.POST, "/halls/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/halls/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/halls/**").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.POST, "/films/*/showtimes").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/films/*/showtimes").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/films/*/showtimes").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/films/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/halls/**").authenticated()
+                        .requestMatchers(HttpMethod.GET,"/films/*/showtimes").authenticated()
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(customAuthProvider)
@@ -65,6 +79,4 @@ public class SecurityConfig {
                 .userDetailsService(cinemaUserDetailsService)
                 .build();
     }
-
-
 }

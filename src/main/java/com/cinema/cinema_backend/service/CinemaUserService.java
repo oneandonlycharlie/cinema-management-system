@@ -32,12 +32,13 @@ public class CinemaUserService {
         if (userRepository.existsByEmail(request.email())) {
             throw new IllegalArgumentException("Email already registered");
         }
+        String role = "admin".equalsIgnoreCase(request.role())? "ROLE_ADMIN":"ROLE_USER";
         CinemaUser newUser = new CinemaUser(
                 null,
                 request.name(),
                 request.email(),
                 passwordEncoder.encode(request.password()),
-                "ROLE_USER"
+                role
         );
         userRepository.save(newUser);
     }
