@@ -57,6 +57,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(matcherRegistry -> matcherRegistry
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/images/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/films/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/halls/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/films/*/showtimes").permitAll()
                         .requestMatchers(HttpMethod.POST, "/films/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/films/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/films/**").hasRole("ADMIN")
@@ -68,10 +71,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/films/*/showtimes").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/films/*/showtimes").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/films/*/showtimes").hasRole("ADMIN")
-
-                        .requestMatchers(HttpMethod.GET, "/films/**").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/halls/**").authenticated()
-                        .requestMatchers(HttpMethod.GET,"/films/*/showtimes").authenticated()
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(customAuthProvider)
