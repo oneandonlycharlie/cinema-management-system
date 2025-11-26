@@ -4,10 +4,8 @@ import com.cinema.cinema_backend.dto.FilmDto;
 import com.cinema.cinema_backend.dto.ShowTimeDto;
 import com.cinema.cinema_backend.model.Actor;
 import com.cinema.cinema_backend.model.Film;
-import org.springframework.boot.actuate.endpoint.Show;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class FilmWrapper {
 
@@ -16,6 +14,7 @@ public class FilmWrapper {
                 .stream()
                 .map(Actor::getName)
                 .toList();
+
         List<ShowTimeDto> showTimeDtos = film.getShowTimes()
                 .stream()
                 .map(showTime -> new ShowTimeDto(
@@ -29,7 +28,8 @@ public class FilmWrapper {
                         showTime.getPrice()
                 ))
                 .toList();
-        return new FilmDto(
+
+        FilmDto dto = new FilmDto(
                 film.getId(),
                 film.getName(),
                 film.getLength(),
@@ -38,7 +38,10 @@ public class FilmWrapper {
                 film.getRating(),
                 showTimeDtos,
                 film.getDirector() != null ? film.getDirector().getName() : null,
-                actors
+                actors,
+                film.getCoverImageUrl()
         );
+        
+        return dto;
     }
 }
