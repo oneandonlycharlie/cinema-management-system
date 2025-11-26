@@ -4,14 +4,21 @@ import com.cinema.cinema_backend.dto.ApiResponse;
 import com.cinema.cinema_backend.dto.FilmCreateRequest;
 import com.cinema.cinema_backend.dto.FilmDto;
 import com.cinema.cinema_backend.dto.FilmUpdateRequest;
+import com.cinema.cinema_backend.model.Director;
+import com.cinema.cinema_backend.model.Film;
+import com.cinema.cinema_backend.model.Genre;
 import com.cinema.cinema_backend.service.FilmService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 @RestController
 public class FilmController {
@@ -22,12 +29,6 @@ public class FilmController {
         this.filmService = filmService;
     }
 
-    @PostMapping(path = "/films")
-    public ResponseEntity<?> createFilm(@RequestBody @Valid FilmCreateRequest request){
-        System.out.println(request);
-        FilmDto filmDto = filmService.save(request);
-        return ResponseEntity.status(201).body(new ApiResponse<FilmDto>(filmDto,  "Film created", null));
-    }
 
     // read
     @GetMapping(path = "/films")
@@ -39,26 +40,33 @@ public class FilmController {
 
     @GetMapping(path = "/films/{id}")
     public ResponseEntity<?> getFilmById(@PathVariable Long id){
-        FilmDto filmDto = filmService.findFilmById(id);
-        if (filmDto == null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Film not found with id: " + id);
-        }
-        ApiResponse<FilmDto> response = new ApiResponse<>(filmDto, "Fetched film", null);
+        FilmDto films = filmService.findFilmById(id);
+        ApiResponse<FilmDto> response = new ApiResponse<>(films, "Fetched all films", null);
         return ResponseEntity.ok(response);
     }
 
-    // update
-    @PatchMapping(path = "/films/{id}")
-    public ResponseEntity<?> updateFilm(@PathVariable Long id, @RequestBody FilmUpdateRequest request) {
-        try {
-            FilmDto updatedFilmDto = filmService.updateFilmById(id, request);
-            return ResponseEntity.ok(new ApiResponse<>(updatedFilmDto, "Film updated", null));
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(404).body(new ApiResponse<>(null, null, "Film not found"));
+    @PostMapping(path = "/films", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<FilmDto> createFilm(
+            @RequestPart("data") FilmCreateRequest request,
+            @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
 
-        }
+        FilmDto filmDto = filmService.createFilm(request, image);
+        return ResponseEntity.ok(filmDto);
     }
+
+
+
+    // update
+    @PatchMapping(value = "/films/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<FilmDto> updateFilm(
+            @PathVariable Long id,
+            @RequestPart("data") FilmUpdateRequest request,
+            @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+
+        FilmDto filmDto = filmService.updateFilm(id, request, image);
+        return ResponseEntity.ok(filmDto);
+    }
+
 
     // delete
     @DeleteMapping(path = "/films/{id}")
