@@ -10,4 +10,6 @@ import java.util.Optional;
 @Repository
 public interface DirectorRepository extends JpaRepository<Director, Long> {
     Optional<Director> findByName(String name);
+
+    Optional<Director> findByNameIgnoreCase(String name);
 }
