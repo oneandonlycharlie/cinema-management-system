@@ -56,6 +56,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(matcherRegistry -> matcherRegistry
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/images/**").permitAll()
                         .requestMatchers("/films/*/showtimes").authenticated()
                         .anyRequest().authenticated()
                 )
