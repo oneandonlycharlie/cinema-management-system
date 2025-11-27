@@ -6,7 +6,7 @@ import com.cinema.cinema_backend.model.Seat;
 import com.cinema.cinema_backend.model.ShowTime;
 import java.util.stream.Collectors;
 
-public class HallMapper {
+public class HallWrapper {
 
     public static HallDto toDto(Hall entity) {
         HallDto dto = new HallDto();

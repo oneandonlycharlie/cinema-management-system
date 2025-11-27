@@ -11,7 +11,7 @@ public class OrderWrapper {
         if (order == null) return null;
 
         List<TicketDto> tickets = order.getTickets().stream()
-                .map(TicketMapper::toDto)
+                .map(TicketWrapper::toDto)
                 .collect(Collectors.toList());
 
         return new OrderWithTicketsDto(

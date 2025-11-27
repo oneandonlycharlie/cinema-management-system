@@ -11,7 +11,6 @@ public class ShowTimeCreateRequest {
     private List<Long> seatIds;
     private BigDecimal price;
 
-    // Getter / Setter
     public Long getHallId() {
         return hallId;
     }

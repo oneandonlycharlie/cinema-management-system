@@ -8,8 +8,6 @@ public class OrderDto {
     private String status;
     private BigDecimal totalAmount;
     private int seatCount;
-
-    // 新增电影和场次信息
     private String filmName;
     private LocalDateTime showtimeStart;
     private String hallName;
@@ -27,7 +25,6 @@ public class OrderDto {
         this.hallName = hallName;
     }
 
-    // getter & setter
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

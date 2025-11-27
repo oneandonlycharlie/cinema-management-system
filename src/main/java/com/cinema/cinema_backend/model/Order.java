@@ -1,7 +1,6 @@
 package com.cinema.cinema_backend.model;
 
 import jakarta.persistence.*;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;

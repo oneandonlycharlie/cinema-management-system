@@ -3,7 +3,6 @@ package com.cinema.cinema_backend.dto;
 import com.cinema.cinema_backend.model.Actor;
 import com.cinema.cinema_backend.model.Director;
 import com.cinema.cinema_backend.model.Genre;
-
 import java.util.Set;
 
 public class FilmUpdateRequest {

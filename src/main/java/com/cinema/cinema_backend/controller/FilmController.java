@@ -4,12 +4,7 @@ import com.cinema.cinema_backend.dto.ApiResponse;
 import com.cinema.cinema_backend.dto.FilmCreateRequest;
 import com.cinema.cinema_backend.dto.FilmDto;
 import com.cinema.cinema_backend.dto.FilmUpdateRequest;
-import com.cinema.cinema_backend.model.Director;
-import com.cinema.cinema_backend.model.Film;
-import com.cinema.cinema_backend.model.Genre;
 import com.cinema.cinema_backend.service.FilmService;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
+
 
 @RestController
 public class FilmController {
@@ -54,9 +48,6 @@ public class FilmController {
         return ResponseEntity.ok(filmDto);
     }
 
-
-
-    // update
     @PatchMapping(value = "/films/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<FilmDto> updateFilm(
             @PathVariable Long id,
@@ -67,8 +58,6 @@ public class FilmController {
         return ResponseEntity.ok(filmDto);
     }
 
-
-    // delete
     @DeleteMapping(path = "/films/{id}")
     public ResponseEntity<?> deleteFilm(@PathVariable Long id) {
         boolean deleted = filmService.deleteFilmById(id);

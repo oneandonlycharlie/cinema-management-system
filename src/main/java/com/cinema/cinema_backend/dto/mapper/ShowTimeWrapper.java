@@ -5,7 +5,7 @@ import com.cinema.cinema_backend.model.Seat;
 import com.cinema.cinema_backend.model.ShowTime;
 import java.util.stream.Collectors;
 
-public class ShowTimeMapper {
+public class ShowTimeWrapper {
     public static ShowTimeDto toDto(ShowTime showTime) {
         ShowTimeDto dto = new ShowTimeDto();
         dto.setId(showTime.getId());

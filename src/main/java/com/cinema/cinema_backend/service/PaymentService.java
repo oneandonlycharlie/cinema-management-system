@@ -4,7 +4,6 @@ import com.cinema.cinema_backend.dto.PaymentUpdateRequest;
 import com.cinema.cinema_backend.model.Payment;
 import com.cinema.cinema_backend.repository.PaymentRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;

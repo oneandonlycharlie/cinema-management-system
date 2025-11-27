@@ -4,7 +4,6 @@ import com.cinema.cinema_backend.model.Hall;
 import com.cinema.cinema_backend.model.Seat;
 import com.cinema.cinema_backend.repository.SeatRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 

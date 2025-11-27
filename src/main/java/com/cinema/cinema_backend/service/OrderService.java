@@ -8,13 +8,10 @@ import com.cinema.cinema_backend.model.*;
 import com.cinema.cinema_backend.repository.CinemaUserRepository;
 import com.cinema.cinema_backend.repository.OrderRepository;
 import com.cinema.cinema_backend.repository.ShowTimeRepository;
-import com.cinema.cinema_backend.repository.TicketRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -61,8 +58,6 @@ public class OrderService {
                 showtime.getHall().getName()
         );
     }
-
-
 
     // Read all
     public List<Order> findAll() {
@@ -119,6 +114,5 @@ public class OrderService {
                 showtime.getHall().getName()
         );
     }
-
 }
 

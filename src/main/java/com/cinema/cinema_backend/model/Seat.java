@@ -1,7 +1,6 @@
 package com.cinema.cinema_backend.model;
 
 import jakarta.persistence.*;
-
 import java.util.LinkedHashSet;
 import java.util.Set;
 

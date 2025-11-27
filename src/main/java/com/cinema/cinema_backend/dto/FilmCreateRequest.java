@@ -1,7 +1,6 @@
 package com.cinema.cinema_backend.dto;
 
 import jakarta.validation.constraints.NotNull;
-
 import java.util.Set;
 
 @NotNull

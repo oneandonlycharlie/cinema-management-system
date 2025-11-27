@@ -46,16 +46,13 @@ public class TicketService {
         ShowTime showTime = showTimeRepository.findById(showtimeId)
                 .orElseThrow(() -> new NoSuchElementException("ShowTime not found with id: " + showtimeId));
 
-        // 获取所有 seats
         List<Seat> seats = new ArrayList<>(showTime.getSeats());
 
-        // 找出已售座位
         List<Long> soldSeatIds = ticketRepository.findByShowTimeId(showtimeId)
                 .stream()
                 .map(ticket -> ticket.getSeat().getId())   // 每张票只有一个 seat
                 .toList();
 
-        // 过滤可用座位
         List<Seat> availableSeats = seats.stream()
                 .filter(seat -> !soldSeatIds.contains(seat.getId()))
                 .collect(Collectors.toList());
@@ -124,8 +121,6 @@ public class TicketService {
 
         return saved;
     }
-
-
 
     // Delete
     @Transactional

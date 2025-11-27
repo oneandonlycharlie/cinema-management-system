@@ -7,7 +7,7 @@ import com.cinema.cinema_backend.model.ShowTime;
 
 import java.util.stream.Collectors;
 
-public class SeatMapper {
+public class SeatWrapper {
 
     public static SeatDto toDto(Seat entity) {
         SeatDto dto = new SeatDto();

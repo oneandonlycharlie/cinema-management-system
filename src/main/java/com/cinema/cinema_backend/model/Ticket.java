@@ -12,15 +12,15 @@ public class Ticket {
 
     @ManyToOne
     @JoinColumn(name = "showtime_id", nullable = false)
-    private ShowTime showTime; // 绑定场次，而不是电影
+    private ShowTime showTime;
 
     @ManyToOne
     @JoinColumn(name = "seat_id", nullable = false)
-    private Seat seat; // 票绑定的座位
+    private Seat seat;
 
     @ManyToOne
     @JoinColumn(name = "order_id")
-    private Order order; // 订单，可为空
+    private Order order;
 
     private BigDecimal price;
 
@@ -37,7 +37,6 @@ public class Ticket {
         this.isAvailable = isAvailable;
     }
 
-    // ----------------- Getter & Setter -----------------
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

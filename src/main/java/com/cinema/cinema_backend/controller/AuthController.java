@@ -60,11 +60,7 @@ public class AuthController {
         } catch (UsernameNotFoundException e) {
             throw new BadCredentialsException("Invalid username/email or password");
         }
-
-        // 从 userDetails 拿到 CinemaUser 实体
-        CinemaUser cinemaUser = userDetails.getCinemaUser();  // 我会在下面教你添加 getCinemaUser()
-
-        // 构建前端需要的 user DTO
+        CinemaUser cinemaUser = userDetails.getCinemaUser();
         UserDto userDto = new UserDto(
                 cinemaUser.getId(),
                 cinemaUser.getName(),

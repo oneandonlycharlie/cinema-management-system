@@ -3,7 +3,7 @@ package com.cinema.cinema_backend.dto.mapper;
 import com.cinema.cinema_backend.dto.TicketDto;
 import com.cinema.cinema_backend.model.Ticket;
 
-public class TicketMapper {
+public class TicketWrapper {
     public static TicketDto toDto(Ticket ticket) {
         if (ticket == null) return null;
 

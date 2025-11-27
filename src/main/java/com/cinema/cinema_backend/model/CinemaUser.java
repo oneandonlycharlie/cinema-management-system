@@ -2,8 +2,6 @@ package com.cinema.cinema_backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -24,7 +22,6 @@ public class CinemaUser {
     private Set<Order> orders = new LinkedHashSet<>();
 
     public CinemaUser() {
-
     }
 
     public CinemaUser(Long id, String name, String email, String password, String role, Set<Order> orders) {

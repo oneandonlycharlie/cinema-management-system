@@ -2,10 +2,8 @@ package com.cinema.cinema_backend.controller;
 
 import com.cinema.cinema_backend.dto.ApiResponse;
 import com.cinema.cinema_backend.dto.SeatDto;
-import com.cinema.cinema_backend.dto.mapper.SeatMapper;
-import com.cinema.cinema_backend.model.Seat;
+import com.cinema.cinema_backend.dto.mapper.SeatWrapper;
 import com.cinema.cinema_backend.service.SeatService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -20,14 +18,13 @@ public class SeatController {
         this.seatService = seatService;
     }
 
-
     // Read all
     @GetMapping
     public ResponseEntity<ApiResponse<List<SeatDto>>> getAllSeats() {
 
         List<SeatDto> dtos = seatService.findAll()
                 .stream()
-                .map(SeatMapper::toDto)
+                .map(SeatWrapper::toDto)
                 .toList();
 
         return ResponseEntity.ok(new ApiResponse<>(dtos, "All seats fetched", null));
@@ -39,7 +36,7 @@ public class SeatController {
 
         return seatService.findById(id)
                 .map(seat -> ResponseEntity.ok(
-                        new ApiResponse<>(SeatMapper.toDto(seat), "Seat fetched", null)
+                        new ApiResponse<>(SeatWrapper.toDto(seat), "Seat fetched", null)
                 ))
                 .orElseGet(() ->
                         ResponseEntity.status(404).body(

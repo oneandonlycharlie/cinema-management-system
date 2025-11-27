@@ -1,6 +1,5 @@
 package com.cinema.cinema_backend.model;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.LinkedHashSet;
@@ -23,7 +22,6 @@ public class Film {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "director_id")
     @JsonIgnore
-//    add cascade type
     private Director director;
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(

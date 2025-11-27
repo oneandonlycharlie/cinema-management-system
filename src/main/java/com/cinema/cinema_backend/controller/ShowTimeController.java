@@ -4,11 +4,9 @@ import com.cinema.cinema_backend.dto.ApiResponse;
 import com.cinema.cinema_backend.dto.ShowTimeDto;
 import com.cinema.cinema_backend.dto.ShowTimeCreateRequest;
 import com.cinema.cinema_backend.dto.ShowTimeUpdateRequest;
-import com.cinema.cinema_backend.dto.mapper.ShowTimeMapper;
+import com.cinema.cinema_backend.dto.mapper.ShowTimeWrapper;
 import com.cinema.cinema_backend.model.ShowTime;
 import com.cinema.cinema_backend.service.ShowTimeService;
-import jakarta.persistence.EntityNotFoundException;
-import org.apache.el.lang.ELArithmetic;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +29,7 @@ public class ShowTimeController {
     public ResponseEntity<ApiResponse<ShowTimeDto>> createShowTime(@PathVariable Long filmId, @RequestBody ShowTimeCreateRequest request) {
         try {
             ShowTime saved = showTimeService.createShowTime(filmId, request);
-            ShowTimeDto dto = ShowTimeMapper.toDto(saved);
+            ShowTimeDto dto = ShowTimeWrapper.toDto(saved);
 
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(new ApiResponse<>(dto, "ShowTime created", null));
@@ -50,7 +48,7 @@ public class ShowTimeController {
     public ResponseEntity<ApiResponse<List<ShowTimeDto>>> getAllShowTimes(@PathVariable Long filmId) {
         List<ShowTimeDto> dtos = showTimeService.findByFilmId(filmId)
                 .stream()
-                .map(ShowTimeMapper::toDto)
+                .map(ShowTimeWrapper::toDto)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(new ApiResponse<>(dtos, "All showtimes fetched", null));
@@ -61,7 +59,7 @@ public class ShowTimeController {
     public ResponseEntity<ApiResponse<ShowTimeDto>> getShowTimeById(@PathVariable Long id) {
         return showTimeService.findById(id)
                 .map(showTime -> ResponseEntity.ok(
-                        new ApiResponse<>(ShowTimeMapper.toDto(showTime), "ShowTime fetched", null)
+                        new ApiResponse<>(ShowTimeWrapper.toDto(showTime), "ShowTime fetched", null)
                 ))
                 .orElseGet(() ->
                         ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -77,7 +75,7 @@ public class ShowTimeController {
     ) {
         try {
             ShowTime updated = showTimeService.updateShowTime(id, request);
-            ShowTimeDto dto = ShowTimeMapper.toDto(updated);
+            ShowTimeDto dto = ShowTimeWrapper.toDto(updated);
 
             return ResponseEntity.ok(new ApiResponse<>(dto, "ShowTime updated", null));
 

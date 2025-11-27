@@ -3,7 +3,7 @@ package com.cinema.cinema_backend.controller;
 import com.cinema.cinema_backend.dto.ApiResponse;
 import com.cinema.cinema_backend.dto.TicketDto;
 import com.cinema.cinema_backend.dto.TicketUpdateRequest;
-import com.cinema.cinema_backend.dto.mapper.TicketMapper;
+import com.cinema.cinema_backend.dto.mapper.TicketWrapper;
 import com.cinema.cinema_backend.model.Ticket;
 import com.cinema.cinema_backend.service.TicketService;
 import org.springframework.http.HttpStatus;
@@ -28,7 +28,7 @@ public class TicketController {
     public ResponseEntity<ApiResponse<List<TicketDto>>> getAllTickets() {
         List<TicketDto> dtos = ticketService.findAll()
                 .stream()
-                .map(TicketMapper::toDto)
+                .map(TicketWrapper::toDto)
                 .toList();
         return ResponseEntity.ok(new ApiResponse<>(dtos, "All tickets fetched", null));
     }
@@ -36,7 +36,7 @@ public class TicketController {
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<TicketDto>> getTicketById(@PathVariable Long id) {
         return ticketService.findById(id)
-                .map(ticket -> ResponseEntity.ok(new ApiResponse<>(TicketMapper.toDto(ticket), "Ticket fetched", null)))
+                .map(ticket -> ResponseEntity.ok(new ApiResponse<>(TicketWrapper.toDto(ticket), "Ticket fetched", null)))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(new ApiResponse<>(null, null, "Ticket not found")));
     }
@@ -48,7 +48,7 @@ public class TicketController {
 
         try {
             Ticket updated = ticketService.updateTicket(id, request);
-            TicketDto dto = TicketMapper.toDto(updated);
+            TicketDto dto = TicketWrapper.toDto(updated);
             return ResponseEntity.ok(new ApiResponse<>(dto, "Ticket updated", null));
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

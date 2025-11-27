@@ -1,4 +1,3 @@
-// TicketInfoDto.java
 package com.cinema.cinema_backend.dto;
 
 import java.math.BigDecimal;

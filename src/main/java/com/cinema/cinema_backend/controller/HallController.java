@@ -3,7 +3,7 @@ package com.cinema.cinema_backend.controller;
 import com.cinema.cinema_backend.dto.ApiResponse;
 import com.cinema.cinema_backend.dto.HallDto;
 import com.cinema.cinema_backend.dto.HallUpdateRequest;
-import com.cinema.cinema_backend.dto.mapper.HallMapper;
+import com.cinema.cinema_backend.dto.mapper.HallWrapper;
 import com.cinema.cinema_backend.model.Hall;
 import com.cinema.cinema_backend.service.HallService;
 import com.cinema.cinema_backend.service.SeatService;
@@ -31,7 +31,7 @@ public class HallController {
     public ResponseEntity<ApiResponse<HallDto>> createHall(@RequestBody Hall hall) {
         Hall saved = hallService.save(hall);
         seatService.createSeatsForHall(saved, saved.getCapacity());
-        HallDto dto = HallMapper.toDto(saved);
+        HallDto dto = HallWrapper.toDto(saved);
         ApiResponse<HallDto> response = new ApiResponse<>(dto, "Hall created", null);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -41,7 +41,7 @@ public class HallController {
     public ResponseEntity<ApiResponse<List<HallDto>>> getAllHalls() {
         List<HallDto> allHalls = hallService.findAll()
                 .stream()
-                .map(HallMapper::toDto)
+                .map(HallWrapper::toDto)
                 .collect(Collectors.toList());
 
         ApiResponse<List<HallDto>> response =
@@ -55,7 +55,7 @@ public class HallController {
     public ResponseEntity<ApiResponse<HallDto>> getHallById(@PathVariable Long id) {
         return hallService.findById(id)
                 .map(hall -> {
-                    HallDto dto = HallMapper.toDto(hall);
+                    HallDto dto = HallWrapper.toDto(hall);
                     ApiResponse<HallDto> response =
                             new ApiResponse<>(dto, "Hall fetched", null);
                     return ResponseEntity.ok(response);
@@ -74,7 +74,7 @@ public class HallController {
     ) {
         try {
             Hall updated = hallService.updateHall(id, request);
-            HallDto dto = HallMapper.toDto(updated);
+            HallDto dto = HallWrapper.toDto(updated);
 
             ApiResponse<HallDto> response =
                     new ApiResponse<>(dto, "Hall updated", null);

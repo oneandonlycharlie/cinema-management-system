@@ -3,7 +3,7 @@ package com.cinema.cinema_backend.dto;
 import java.math.BigDecimal;
 
 public class TicketUpdateRequest {
-    private Long seatId;          // null 表示不更新
+    private Long seatId;
     private Boolean isAvailable;
     private BigDecimal price;
 

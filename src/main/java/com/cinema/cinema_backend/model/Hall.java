@@ -21,7 +21,6 @@ public class Hall{
     private Set<Seat> seats = new LinkedHashSet<>();;
 
     public Hall(){
-
     }
 
     public Hall(Long id, String name, int capacity, Set<ShowTime> showTimes, Set<Seat> seats) {

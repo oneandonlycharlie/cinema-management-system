@@ -29,7 +29,7 @@ public class FilmWrapper {
                 ))
                 .toList();
 
-        FilmDto dto = new FilmDto(
+        return new FilmDto(
                 film.getId(),
                 film.getName(),
                 film.getLength(),
@@ -41,7 +41,5 @@ public class FilmWrapper {
                 actors,
                 film.getCoverImageUrl()
         );
-        
-        return dto;
     }
 }

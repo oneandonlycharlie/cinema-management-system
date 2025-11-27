@@ -7,11 +7,9 @@ import com.cinema.cinema_backend.model.Seat;
 import com.cinema.cinema_backend.model.ShowTime;
 import com.cinema.cinema_backend.model.Film;
 import com.cinema.cinema_backend.repository.HallRepository;
-import com.cinema.cinema_backend.repository.SeatRepository;
 import com.cinema.cinema_backend.repository.ShowTimeRepository;
 import com.cinema.cinema_backend.repository.FilmRepository;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -78,14 +76,12 @@ public class ShowTimeService {
         ShowTime foundShowTime = showTimeRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("ShowTime not found with id: " + id));
 
-        // hallId 不为空时更新
         if (request.getHallId() != null) {
             Hall hall = hallRepository.findById(request.getHallId())
                     .orElseThrow(() -> new NoSuchElementException("Hall not found with id: " + request.getHallId()));
             foundShowTime.setHall(hall);
         }
 
-        // filmId 不为空时更新
         if (request.getFilmId() != null) {
             Film film = filmRepository.findById(request.getFilmId())
                     .orElseThrow(() -> new NoSuchElementException("Film not found with id: " + request.getFilmId()));
@@ -103,7 +99,6 @@ public class ShowTimeService {
             throw new RuntimeException("ShowTime time conflict in this hall");
         }
 
-        // startTime / endTime / price 更新
         if (request.getStartTime() != null) foundShowTime.setStartTime(request.getStartTime());
         if (request.getEndTime() != null) foundShowTime.setEndTime(request.getEndTime());
         if (request.getPrice() != null) foundShowTime.setPrice(request.getPrice());

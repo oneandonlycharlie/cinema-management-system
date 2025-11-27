@@ -4,7 +4,6 @@ import com.cinema.cinema_backend.dto.HallUpdateRequest;
 import com.cinema.cinema_backend.model.Hall;
 import com.cinema.cinema_backend.repository.HallRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -46,13 +45,11 @@ public class HallService {
         request.getCapacity().ifPresent(newCapacity -> {
             hall.setCapacity(newCapacity);
 
-            int diff = newCapacity - oldCapacity; // 正数 = 增加, 负数 = 减少
+            int diff = newCapacity - oldCapacity;
 
             if (diff > 0) {
-                // 需要新增座位
                 seatService.createSeatsForHall(hall, diff);
             } else if (diff < 0) {
-                // 需要删除座位
                 seatService.deleteSeatsForHall(hall, -diff);
             }
         });

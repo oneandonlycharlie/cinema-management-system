@@ -8,11 +8,8 @@ import com.cinema.cinema_backend.model.*;
 import com.cinema.cinema_backend.repository.ActorRepository;
 import com.cinema.cinema_backend.repository.DirectorRepository;
 import com.cinema.cinema_backend.repository.FilmRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -48,7 +45,6 @@ public class FilmService {
             film.setGenre(Genre.valueOf(request.getGenre()));
         }
 
-        // ✅ Director: String -> Entity
         if (request.getDirector() != null) {
             Director director = directorRepository
                     .findByName(request.getDirector())
@@ -58,7 +54,6 @@ public class FilmService {
             film.setDirector(director);
         }
 
-        // ✅ Actors: Set<String> -> Set<Actor>
         if (request.getActors() != null) {
             Set<Actor> actorEntities = request.getActors()
                     .stream()
@@ -71,10 +66,9 @@ public class FilmService {
             film.setActors(actorEntities);
         }
 
-        // ✅ 图片处理
         if (image != null && !image.isEmpty()) {
             String imageUrl = saveImage(image);
-            film.setCoverImageUrl(imageUrl);   // 前提：你 Film 里有 coverUrl 字段
+            film.setCoverImageUrl(imageUrl);
         }
 
         Film saved = filmRepository.save(film);
@@ -105,7 +99,6 @@ public class FilmService {
         Film film = filmRepository.findById(filmId)
                 .orElseThrow(() -> new RuntimeException("Film not found: " + filmId));
 
-        // ✅ 允许部分字段更新
         if (request.getName() != null)
             film.setName(request.getName());
 
@@ -121,7 +114,6 @@ public class FilmService {
         if (request.getGenre() != null)
             film.setGenre(request.getGenre());
 
-        // ✅ Director: 既支持传 Director 实体，也可以传名字
         if (request.getDirector() != null) {
             Director director = directorRepository
                     .findByName(request.getDirector().getName())
@@ -131,7 +123,6 @@ public class FilmService {
             film.setDirector(director);
         }
 
-        // ✅ Actors：直接用你已有的 Actor 对象，但做防重复入库
         if (request.getActors() != null) {
             Set<Actor> actors = request.getActors()
                     .stream()
@@ -146,7 +137,6 @@ public class FilmService {
             film.setActors(actors);
         }
 
-        // ✅ 图片处理
         if (image != null && !image.isEmpty()) {
             String imageUrl = saveImage(image);
             film.setCoverImageUrl(imageUrl);
@@ -218,8 +208,4 @@ public class FilmService {
         }
         return actors;
     }
-
-
-
-
 }
